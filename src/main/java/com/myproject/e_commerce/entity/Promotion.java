@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "promotion")
@@ -19,11 +19,18 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Integer id;
+    @Column(name="name")
     private String name;
+    @Column(name="discount_type")
+    @Enumerated(EnumType.STRING)
     private DiscountType discountType;
+    @Column(name = "discount_value")
     private String discountValue;
+    @Column(name = "start_date")
     private LocalDate startDate;
+    @Column(name = "end_date")
     private LocalDate endDate;
-    @OneToOne(cascade = CascadeType.ALL)
-    private OrdersDetail ordersDetail;
+    @OneToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.REFRESH,
+            CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "promotion")
+    private List<OrderDetails> orderDetails;
 }

@@ -2,6 +2,7 @@ package com.myproject.e_commerce.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,7 +24,13 @@ public class User {
     private Set<Authority> authorities;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy = "user")
     private CustomerDetails customerDetails;
-
+    public void addAuthority(Authority authority){
+        if(authorities==null){
+            authorities = new HashSet<>();
+        }
+        authorities.add(authority);
+        authority.setUser(this);
+    }
     @Override
     public String toString() {
         return "User{" +

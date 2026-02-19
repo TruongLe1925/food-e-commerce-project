@@ -1,5 +1,6 @@
 package com.myproject.e_commerce.entity;
 
+import com.myproject.e_commerce.contants.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,8 +16,9 @@ public class Authority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "authorities")
-    private String authority;
+    @Column(name = "authority")
+    @Enumerated(EnumType.STRING)
+    private Role authority;
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,

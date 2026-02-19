@@ -36,6 +36,15 @@ public class Product {
     private String imageUrl;
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,
             CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "product")
-    private List<OrdersDetail> ordersDetail;
-
+    private List<OrderDetails> orderDetails;
+    @ManyToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
+    @JoinTable(name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories;
+    @ManyToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST})
+    @JoinTable(name = "product_option",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "option_id"))
+    private List<Option> options;
 }

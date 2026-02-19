@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.generator.EventType;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -39,5 +40,5 @@ public class Orders {
     @OneToMany(fetch = FetchType.LAZY
             ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.REFRESH, CascadeType.DETACH},mappedBy = "orders")
-    private OrdersDetail ordersDetail;
+    private List<OrderDetails> orderDetails;
 }
