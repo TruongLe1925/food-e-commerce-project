@@ -1,0 +1,31 @@
+package com.myproject.e_commerce.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.generator.EventType;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "cart")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Cart {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+    @Column(name = "create_date",updatable = false,insertable = false)
+    @org.hibernate.annotations.Generated(event = EventType.INSERT)
+    private LocalDateTime createdDate;
+    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "username")
+    private User user;
+    @OneToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,
+            CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "cart")
+    private List<CartItems> cartItems;
+}

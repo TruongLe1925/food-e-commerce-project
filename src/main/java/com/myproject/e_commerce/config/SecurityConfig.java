@@ -31,7 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/account/**","/").permitAll()
                         .requestMatchers("/leaders/**").hasRole("ADMIN")
-                        .requestMatchers("/employ/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/cus/**").hasRole("CUSTOMER")
 //                        .requestMatchers("/").hasRole("/CUSTOMER")
                         .anyRequest().authenticated())

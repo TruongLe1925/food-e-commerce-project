@@ -86,7 +86,8 @@
                         <h6 class="mb-0 fw-bold text-danger">Xóa tài khoản</h6>
                         <small class="text-muted">Mọi dữ liệu sẽ bị xóa vĩnh viễn.</small>
                     </div>
-                    <button class="btn btn-outline-danger btn-sm">Xóa ngay</button>
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                               data-bs-target="#modalXoaTaiKhoan">Xóa ngay</button>
                 </div>
             </div>
         </div>
@@ -101,7 +102,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form th:object="${user}" method="POST">
+            <form th:object="${user}" th:action="@{/cus/update}" method="POST">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Full Name</label>
@@ -131,6 +132,25 @@
             </form>
         </div>
 
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="modalXoaTaiKhoan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <div class="modal-content">
+        <div class="modal-header border-0">
+            <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Xác nhận xóa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            <p>Bạn có chắc chắn muốn xóa tài khoản này không?</p>
+            <p class="text-muted small">Mọi dữ liệu của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục.</p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+            <form th:action="@{/cus/delete}" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-danger">Tôi xác nhận xóa</button>
+            </form>
+        </div>
     </div>
     </div>
 </div>

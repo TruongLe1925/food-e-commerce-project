@@ -47,4 +47,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "option_id"))
     private List<Option> options;
+    @OneToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,
+            CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "product")
+    private List<CartItems> cartItems;
 }

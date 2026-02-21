@@ -24,6 +24,8 @@ public class User {
     private Set<Authority> authorities;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy = "user")
     private CustomerDetails customerDetails;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Cart cart;
     public void addAuthority(Authority authority){
         if(authorities==null){
             authorities = new HashSet<>();

@@ -71,6 +71,21 @@ public class CustomerServiceImpl implements CustomerService{
                 .build();
         return customerDetailsDTO;
     }
-
-
+    @Transactional
+    @Override
+    public void UpdateCustomerDetails(String username,CustomerDetailDTO customerDetailDTO) {
+        User user = customerDAO.getUserAndUserDetailsByUsername(username);
+        CustomerDetails customerDetails = user.getCustomerDetails();
+        customerDetails.setFullName(customerDetailDTO.getFullName());
+        customerDetails.setEmail(customerDetailDTO.getEmail());
+        customerDetails.setPhoneNumber(customerDetailDTO.getPhoneNumber());
+        customerDetails.setAddress(customerDetailDTO.getAddress());
+        user.setCustomerDetails(customerDetails);
+        userRepository.save(user);
+    }
+    @Transactional
+    @Override
+    public void DeleteCustomerById(String username) {
+        userRepository.deleteById(username);
+    }
 }
