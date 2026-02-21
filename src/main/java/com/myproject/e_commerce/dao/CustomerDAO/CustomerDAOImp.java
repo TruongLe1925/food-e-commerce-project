@@ -26,4 +26,12 @@ public class CustomerDAOImp implements CustomerDAO {
         Long count = query.getSingleResult();
         return count > 0;
     }
+
+    @Override
+    public User getUserAndUserDetailsByUsername(String username) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.customerDetails WHERE u.username = :username", User.class);
+        query.setParameter("username", username);
+        User user = query.getSingleResult();
+        return user;
+    }
 }

@@ -1,6 +1,6 @@
 package com.myproject.e_commerce.entity;
 
-import com.myproject.e_commerce.contants.Role;
+import com.myproject.e_commerce.constants.Role;
 import jakarta.persistence.*;
 import lombok.*;
 

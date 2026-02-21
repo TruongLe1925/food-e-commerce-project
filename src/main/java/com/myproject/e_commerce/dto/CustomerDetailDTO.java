@@ -1,16 +1,18 @@
 package com.myproject.e_commerce.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerRegistrationDTO {
+@Builder
+public class CustomerDetailDTO {
     private String username;
-    private String password;
     private String email;
     private String fullName;
     private String phoneNumber;
-    private String confirmPassword;
+    private String address;
 }

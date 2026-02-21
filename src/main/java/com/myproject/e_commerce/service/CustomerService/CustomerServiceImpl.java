@@ -1,6 +1,7 @@
 package com.myproject.e_commerce.service.CustomerService;
-import com.myproject.e_commerce.contants.Role;
+import com.myproject.e_commerce.constants.Role;
 import com.myproject.e_commerce.dao.CustomerDAO.CustomerDAO;
+import com.myproject.e_commerce.dto.CustomerDetailDTO;
 import com.myproject.e_commerce.dto.CustomerRegistrationDTO;
 import com.myproject.e_commerce.entity.Authority;
 import com.myproject.e_commerce.entity.CustomerDetails;
@@ -8,22 +9,18 @@ import com.myproject.e_commerce.entity.User;
 import com.myproject.e_commerce.repository.AuthorityRepository;
 import com.myproject.e_commerce.repository.CustomerDetailsRepository;
 import com.myproject.e_commerce.repository.UserRepository;
-import org.apache.tomcat.util.digester.Rule;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 @Service
-public class CustomerServiceImp implements CustomerService{
+public class CustomerServiceImpl implements CustomerService{
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
     private final CustomerDetailsRepository customerDetailsRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomerDAO customerDAO;
-    public CustomerServiceImp(CustomerDetailsRepository customerDetailsRepository,PasswordEncoder passwordEncoder,UserRepository userRepository, AuthorityRepository authorityRepository,CustomerDAO customerDAO) {
+    public CustomerServiceImpl(CustomerDetailsRepository customerDetailsRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, AuthorityRepository authorityRepository, CustomerDAO customerDAO) {
         this.customerDAO=customerDAO;
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
@@ -62,4 +59,18 @@ public class CustomerServiceImp implements CustomerService{
         userRepository.save(user);
 
     }
+
+    @Override
+    public CustomerDetailDTO getCustomerDetailsByUsername(String username) {
+        User user = customerDAO.getUserAndUserDetailsByUsername(username);
+        CustomerDetailDTO customerDetailsDTO = CustomerDetailDTO.builder()
+                .fullName(user.getCustomerDetails().getFullName())
+                .email(user.getCustomerDetails().getEmail())
+                .phoneNumber(user.getCustomerDetails().getPhoneNumber())
+                .address(user.getCustomerDetails().getAddress())
+                .build();
+        return customerDetailsDTO;
+    }
+
+
 }

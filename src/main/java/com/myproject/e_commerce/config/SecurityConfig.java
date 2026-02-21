@@ -27,19 +27,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests.requestMatchers("/leaders/**").hasRole("EMPLOYEE")
+                authorizeRequests
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                        .requestMatchers("/account/**").permitAll()
+                        .requestMatchers("/account/**","/").permitAll()
+                        .requestMatchers("/leaders/**").hasRole("ADMIN")
                         .requestMatchers("/employ/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/").hasRole("/CUSTOMER")
+                        .requestMatchers("/cus/**").hasRole("CUSTOMER")
+//                        .requestMatchers("/").hasRole("/CUSTOMER")
                         .anyRequest().authenticated())
                 .formLogin(form->
                         form.loginPage("/account/login")
                                 .loginProcessingUrl("/authenticate")
-                                .defaultSuccessUrl("/home",true)
+                                .defaultSuccessUrl("/",true)
                                 .permitAll())
-                .logout(logout ->logout.logoutUrl("/logout").permitAll());
-        http.httpBasic(Customizer.withDefaults());
+                .logout(logout ->logout.logoutUrl("/logout").permitAll())
+                .exceptionHandling(configurer->
+                        configurer.accessDeniedPage("/accessDenied"));;
         http.csrf(csrf -> csrf.disable());
         return http.build();
     }

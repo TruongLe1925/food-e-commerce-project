@@ -1,6 +1,6 @@
 package com.myproject.e_commerce.entity;
 
-import com.myproject.e_commerce.contants.DiscountType;
+import com.myproject.e_commerce.constants.DiscountType;
 import jakarta.persistence.*;
 import lombok.*;
 
