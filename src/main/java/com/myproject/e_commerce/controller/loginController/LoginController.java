@@ -1,4 +1,4 @@
-package com.myproject.e_commerce.controller.logincontroller;
+package com.myproject.e_commerce.controller.loginController;
 
 import com.myproject.e_commerce.dto.CustomerRegistrationDTO;
 import com.myproject.e_commerce.service.CustomerService.CustomerService;

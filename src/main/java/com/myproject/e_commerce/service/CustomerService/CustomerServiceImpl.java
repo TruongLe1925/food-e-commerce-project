@@ -12,7 +12,6 @@ import com.myproject.e_commerce.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 @Service
 public class CustomerServiceImpl implements CustomerService{
     private final UserRepository userRepository;
@@ -71,9 +70,10 @@ public class CustomerServiceImpl implements CustomerService{
                 .build();
         return customerDetailsDTO;
     }
+
     @Transactional
     @Override
-    public void UpdateCustomerDetails(String username,CustomerDetailDTO customerDetailDTO) {
+    public void updateCustomerDetails(String username, CustomerDetailDTO customerDetailDTO) {
         User user = customerDAO.getUserAndUserDetailsByUsername(username);
         CustomerDetails customerDetails = user.getCustomerDetails();
         customerDetails.setFullName(customerDetailDTO.getFullName());
@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService{
     }
     @Transactional
     @Override
-    public void DeleteCustomerById(String username) {
+    public void deleteCustomerById(String username) {
         userRepository.deleteById(username);
     }
 }

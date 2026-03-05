@@ -50,4 +50,17 @@ public class Product {
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,
             CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "product")
     private List<CartItems> cartItems;
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                ", createDate=" + createDate +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
 }
