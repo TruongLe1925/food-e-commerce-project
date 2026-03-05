@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class CartItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

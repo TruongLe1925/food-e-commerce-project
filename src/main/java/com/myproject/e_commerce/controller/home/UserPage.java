@@ -30,13 +30,13 @@ public class UserPage {
     @PostMapping("/update")
     public String updateCustomerDetails(CustomerDetailDTO customerDetailDTO, Principal principal){
         String username = principal.getName();
-        customerService.UpdateCustomerDetails(username,customerDetailDTO);
+        customerService.updateCustomerDetails(username,customerDetailDTO);
         return "redirect:/cus/customerdetail";
     }
     @PostMapping("/delete")
     public String deleteCustomer(Principal principal, HttpServletRequest request) throws ServletException{
         String username = principal.getName();
-        customerService.DeleteCustomerById(username);
+        customerService.deleteCustomerById(username);
         request.logout();
         try {
             request.logout();
@@ -44,9 +44,5 @@ public class UserPage {
             e.printStackTrace();
         }
         return "redirect:/";
-    }
-    @GetMapping("/cart")
-    public String cart(){
-        return "/shop-homepage/shopping-cart";
     }
 }

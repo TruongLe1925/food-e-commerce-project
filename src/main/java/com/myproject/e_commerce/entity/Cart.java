@@ -6,6 +6,7 @@ import org.hibernate.generator.EventType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "cart")
@@ -27,5 +28,13 @@ public class Cart {
     private User user;
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,
             CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "cart")
-    private List<CartItems> cartItems;
+    private Set<CartItems> cartItems;
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }

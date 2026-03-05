@@ -13,6 +13,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="/css/index.css" rel="stylesheet" />
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     </head>
     <body>
         <!-- Navigation-->
@@ -36,7 +37,7 @@
                     </ul>
                     <form class="d-flex">
                         <div sec:authorize="hasRole('CUSTOMER')">
-                            <a th:href="@{/cus/cart}"  class="btn btn-outline-dark">
+                            <a th:href="@{/cart/showCart}"  class="btn btn-outline-dark">
                                 <i class="bi-cart-fill me-1"></i>
                                 Cart
                             </a>
@@ -48,12 +49,12 @@
                         </div>
                         <div sec:authorize="isAnonymous()" class="d-flex align-items-center">
                             <p class="mb-0">
-                                <a class="btn btn-outline-dark ms-2" th:href="@{/login}" target="_blank">
+                                <a class="btn btn-outline-dark ms-2" th:href="@{/account/login}">
                                     <i class="bi-box-arrow-in-right"></i> Login
                                 </a>
                             </p>
                             <p class="mb-0">
-                                <a class="btn btn-outline-dark ms-2" th:href="@{account/register}" target="_blank">
+                                <a class="btn btn-outline-dark ms-2" th:href="@{/account/register}" target="_blank">
                                     <i class="bi bi-person-plus"></i> Register
                                 </a>
                             </p>
@@ -91,7 +92,7 @@
                             <!-- Product actions-->
 
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <form th:action="@{/add-to-cart}" method="POST" class="text-center">
+                                <form hx-post="/addToCart" hx-swap="none" method="POST" class="text-center">
                                     <input type="hidden" name="productName" th:value="${product.productName}" />
                                     <input type="hidden" name="quantity" th:value="1"/>
                                     <button type="submit" class="btn btn-outline-dark mt-auto">
