@@ -1,4 +1,4 @@
-package com.myproject.e_commerce.service.Cart;
+package com.myproject.e_commerce.service.CartService;
 import com.myproject.e_commerce.dao.InCartDAO.InCartDAO;
 import com.myproject.e_commerce.dto.CartDTO;
 import com.myproject.e_commerce.dto.CartResponseDTO;

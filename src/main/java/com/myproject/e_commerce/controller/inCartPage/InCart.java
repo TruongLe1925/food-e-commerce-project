@@ -1,7 +1,8 @@
 package com.myproject.e_commerce.controller.inCartPage;
 
 import com.myproject.e_commerce.dto.CartResponseDTO;
-import com.myproject.e_commerce.service.Cart.CartService;
+import com.myproject.e_commerce.service.CartService.CartService;
+import com.myproject.e_commerce.service.OrderService.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +16,10 @@ import java.security.Principal;
 @RequestMapping("cart")
 public class InCart {
     private final CartService cartService;
-    public  InCart(CartService cartService) {
+    private final OrderService orderService;
+    public  InCart(CartService cartService,OrderService orderService) {
         this.cartService = cartService;
+        this.orderService = orderService;
     }
     @GetMapping("/showCart")
     public String cart(Model model, Principal principal) {
@@ -29,4 +32,10 @@ public class InCart {
         cartService.deleteCartItem(cartItemsId);
         return "redirect:/cart/showCart";
     }
+    @PostMapping("/checkout")
+    public String checkout(Principal principal, @RequestParam("note") String note) {
+        orderService.addToOrder(principal.getName(), note);
+        return "redirect:/cart/showCart";
+    }
+
 }

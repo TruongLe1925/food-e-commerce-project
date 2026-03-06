@@ -45,4 +45,8 @@ public class UserPage {
         }
         return "redirect:/";
     }
+    @GetMapping("/orders")
+    public String viewOrders(Model model, Principal principal) {
+        return "/user-profile/order-history";
+    }
 }

@@ -98,11 +98,19 @@
                     <span class="fw-bold fs-5">Tổng cộng</span>
                     <span class="fw-bold fs-5 text-dark" th:text="${itemCarts.cartTotalPrice}">165.000đ</span>
                 </div>
-                <button class="btn btn-checkout btn-lg w-100 py-3">THANH TOÁN</button>
+
+                <form th:action="@{/cart/checkout}" method="POST">
+                    <div class="mb-3">
+                        <label for="orderNote" class="form-label small fw-bold text-muted">GHI CHÚ ĐƠN HÀNG</label>
+                        <textarea class="form-control" id="orderNote" name="note"
+                                  rows="3" placeholder="Ví dụ: Giao giờ hành chính, hoa tươi ít lá..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-checkout btn-lg w-100 py-3">THANH TOÁN</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-<div class="mt-auto" th:insert="~{layout :: footer}"></div>
+<div th:insert="~{layout :: footer}"></div>
 </body>
 </html>
