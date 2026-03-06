@@ -29,25 +29,22 @@
             <tr>
                 <th>Mã đơn</th>
                 <th>Ngày đặt</th>
-                <th>Tổng tiền</th>
+                <th>Note</th>
                 <th>Trạng thái</th>
                 <th>Chi tiết</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="order : ${orders}">
-                <td th:text="${order.id}">#ID</td>
-                <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}">Ngày</td>
-                <td th:text="${order.total}">Tổng tiền</td>
+                <td th:text="${order.orderId}">#ID</td>
+                <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${order.note}">Tổng tiền</td>
                 <td>
-                    <span th:text="${order.status}"
-                          th:classappend="${order.status == 'Hoàn tất'} ? 'badge bg-success' :
-                                          (order.status == 'Đang giao') ? 'badge bg-warning text-dark' :
-                                          'badge bg-danger'">
+                    <span th:text="${order.status}">
                     </span>
                 </td>
                 <td>
-                    <a th:href="@{/cus/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary">Xem</a>
+                    <a  class="btn btn-sm btn-outline-primary">Xem</a>
                 </td>
             </tr>
             </tbody>

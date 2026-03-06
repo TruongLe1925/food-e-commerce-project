@@ -91,7 +91,6 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public void deleteCartItem(Integer cartItemsId) {
-
         cartItemsRepository.deleteById(cartItemsId);
     }
 }
