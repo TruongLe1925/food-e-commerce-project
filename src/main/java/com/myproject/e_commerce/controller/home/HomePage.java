@@ -1,13 +1,8 @@
 package com.myproject.e_commerce.controller.home;
 
 import com.myproject.e_commerce.dto.CartDTO;
-import com.myproject.e_commerce.dto.CartResponseDTO;
-import com.myproject.e_commerce.dto.InCartDTO;
 import com.myproject.e_commerce.dto.ProductHomePageDTO;
-import com.myproject.e_commerce.entity.CartItems;
-import com.myproject.e_commerce.entity.Product;
-import com.myproject.e_commerce.service.Cart.CartService;
-import com.myproject.e_commerce.service.CustomerService.CustomerService;
+import com.myproject.e_commerce.service.CartService.CartService;
 import com.myproject.e_commerce.service.ProductService.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 public class HomePage {
