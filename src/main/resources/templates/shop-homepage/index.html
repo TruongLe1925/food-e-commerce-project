@@ -47,6 +47,17 @@
                                 <a class="btn btn-outline-dark ms-2" href="#profile" th:href="@{/cus/customerdetail}" ><i class="bi-person-fill"></i></a>
                             </p>
                         </div>
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/admin/dashboard}" class="btn btn-outline-danger ms-2">
+                                <i class="bi bi-shield-lock"></i> Admin Panel
+                            </a>
+                        </div>
+
+                        <div sec:authorize="hasRole('MANAGER')">
+                            <a th:href="@{/manager/orders}" class="btn btn-outline-info ms-2">
+                                <i class="bi bi-kanban"></i> Manager Portal
+                            </a>
+                        </div>
                         <div sec:authorize="isAnonymous()" class="d-flex align-items-center">
                             <p class="mb-0">
                                 <a class="btn btn-outline-dark ms-2" th:href="@{/account/login}">
@@ -92,7 +103,7 @@
                             <!-- Product actions-->
 
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <form th:if="${#authorization.expression('isAuthenticated()')}"
+                                <form sec:authorize="hasRole('CUSTOMER')"
                                       hx-post="/addToCart"
                                       hx-swap="none"
                                       method="POST"
@@ -104,10 +115,13 @@
                                     </button>
                                 </form>
 
-                                <div th:unless="${#authorization.expression('isAuthenticated()')}" class="text-center">
+                                <div sec:authorize="isAnonymous()" class="text-center">
                                     <a th:href="@{/login}" class="btn btn-outline-primary mt-auto">
                                         Login to Buy
                                     </a>
+                                </div>
+                                <div sec:authorize="hasAnyRole('ADMIN', 'MANAGER')" class="text-center text-muted small">
+                                    View Only Mode
                                 </div>
                             </div>
                         </div>

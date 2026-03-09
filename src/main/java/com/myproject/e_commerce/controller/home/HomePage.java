@@ -25,7 +25,6 @@ public class HomePage {
     @GetMapping("/")
     public String home(Model model) {
         List<ProductHomePageDTO> productHomePageDTOS = productService.findAllProducts();
-        System.out.println("productHomePageDTOS : "+productHomePageDTOS);
         model.addAttribute("product", productHomePageDTOS);
         return "/shop-homepage/index";
     }

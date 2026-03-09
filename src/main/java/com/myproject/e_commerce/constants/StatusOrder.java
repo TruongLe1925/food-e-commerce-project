@@ -5,5 +5,13 @@ public enum StatusOrder {
     CONFIRMED,
     PROCESSING,
     COMPLETED,
-    CANCELLED,
+    CANCELLED;
+    public StatusOrder next() {
+        return switch (this) {
+            case PENDING    -> CONFIRMED;
+            case CONFIRMED  -> PROCESSING;
+            case PROCESSING -> COMPLETED;
+            default         -> this;
+        };
+    }
 }

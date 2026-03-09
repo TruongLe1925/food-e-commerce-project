@@ -22,11 +22,11 @@ import java.util.Set;
 
 @Service
 public class CartServiceImpl implements CartService {
-    private CartRepository cartRepository;
-    private CartItemsRepository cartItemsRepository;
-    private UserRepository userRepository;
-    private ProductRepository productRepository;
-    private InCartDAO inCartDAO;
+    private final CartRepository cartRepository;
+    private final CartItemsRepository cartItemsRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final InCartDAO inCartDAO;
     public CartServiceImpl(CartRepository cartRepository, CartItemsRepository cartItemsRepository, UserRepository userRepository , ProductRepository productRepository,InCartDAO inCartDAO) {
         this.inCartDAO = inCartDAO;
         this.cartRepository = cartRepository;
