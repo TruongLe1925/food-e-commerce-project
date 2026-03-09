@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.generator.EventType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,7 +31,7 @@ public class Orders {
     @ManyToOne(fetch = FetchType.LAZY
                 ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                             CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinColumn(name="customer.detail")
+    @JoinColumn(name="customer_id")
     private CustomerDetails customerDetails;
     @ManyToOne(fetch = FetchType.LAZY
                 ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
@@ -41,4 +42,11 @@ public class Orders {
             ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.REFRESH, CascadeType.DETACH},mappedBy = "orders")
     private List<OrderDetails> orderDetails;
+    public void addOrderDetails(OrderDetails orderDetails){
+        if (this.orderDetails == null){
+            this.orderDetails =  new ArrayList<>();
+            }
+            this.orderDetails.add(orderDetails);
+        orderDetails.setOrders(this);
+    }
 }

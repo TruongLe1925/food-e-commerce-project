@@ -1,5 +1,6 @@
 package com.myproject.e_commerce.entity;
 
+import com.myproject.e_commerce.constants.StatusOrder;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,19 +19,12 @@ public class Status {
     @Column(name = "id")
     private Integer id;
     @Column(name = "name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private StatusOrder status;
     @Column(name = "description")
     private String description;
     @OneToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST,CascadeType.MERGE,
                     CascadeType.REFRESH,CascadeType.DETACH},mappedBy="status")
     private List<Orders> orders;
-    @Override
-    public String toString() {
-        return "Status{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }
