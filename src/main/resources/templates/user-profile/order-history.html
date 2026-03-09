@@ -44,7 +44,8 @@
                     </span>
                 </td>
                 <td>
-                    <a  class="btn btn-sm btn-outline-primary">Xem</a>
+                    <a th:href="@{/cus/orderdetails/{id}(id=${order.orderId})}"
+                       class="btn btn-sm btn-outline-primary">Xem</a>
                 </td>
             </tr>
             </tbody>
