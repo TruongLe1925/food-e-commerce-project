@@ -1,9 +1,12 @@
 package com.myproject.e_commerce.dao.CustomerDAO;
 
+import com.myproject.e_commerce.entity.CustomerDetails;
 import com.myproject.e_commerce.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class CustomerDAOImp implements CustomerDAO {
@@ -33,5 +36,11 @@ public class CustomerDAOImp implements CustomerDAO {
         query.setParameter("username", username);
         User user = query.getSingleResult();
         return user;
+    }
+
+    @Override
+    public List<CustomerDetails> findAllCustomerDetails() {
+        TypedQuery<CustomerDetails> query = entityManager.createQuery("SELECT c FROM CustomerDetails c LEFT JOIN FETCH c.user", CustomerDetails.class);
+        return query.getResultList();
     }
 }

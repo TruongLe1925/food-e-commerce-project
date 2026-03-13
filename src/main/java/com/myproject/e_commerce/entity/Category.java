@@ -3,6 +3,7 @@ package com.myproject.e_commerce.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,4 +27,10 @@ public class Category {
     private String thumbnail;
     @ManyToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "categories")
     private List<Product> products;
+    public void addProduct(Product product) {
+        if (this.products == null) {
+            this.products = new ArrayList<>();
+        }
+        this.products.add(product);
+    }
 }

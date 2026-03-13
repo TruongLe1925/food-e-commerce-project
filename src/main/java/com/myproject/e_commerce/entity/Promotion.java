@@ -4,6 +4,7 @@ import com.myproject.e_commerce.constants.DiscountType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,8 +25,8 @@ public class Promotion {
     @Column(name="discount_type")
     @Enumerated(EnumType.STRING)
     private DiscountType discountType;
-    @Column(name = "discount_value")
-    private String discountValue;
+    @Column(name = "discount_value",precision = 15,scale = 2)
+    private BigDecimal discountValue;
     @Column(name = "start_date")
     private LocalDate startDate;
     @Column(name = "end_date")

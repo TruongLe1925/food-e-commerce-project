@@ -28,9 +28,8 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link active"><i class="fas fa-chart-line me-1"></i> Dashboard</a></li>
         <li class="nav-item"><a th:href="@{/admin/product}" class="nav-link"><i class="fas fa-box me-1"></i> Sản phẩm</a></li>
-        <li class="nav-item"><a th:href="@{/admin/order}" class="nav-link"><i class="fas fa-shopping-cart me-1"></i> Đơn hàng</a></li>
         <li class="nav-item"><a th:href="@{/admin/customer}" class="nav-link"><i class="fas fa-users me-1"></i> Khách hàng</a></li>
-        <li class="nav-item"><a th:href="@{/admin/promotion active}" class="nav-link"><i class="fas fa-tags me-1"></i> Khuyến mãi</a></li>
+        <li class="nav-item"><a th:href="@{/admin/promotion}" class="nav-link active"><i class="fas fa-tags me-1"></i> Khuyến mãi</a></li>
         <li class="nav-item"><a th:href="@{/admin/authority}" class="nav-link"><i class="fas fa-user-shield me-1"></i> Phân quyền</a></li>
       </ul>
     </div>
@@ -43,32 +42,101 @@
       <h2 class="h4 fw-bold text-dark mb-0">Chương trình Khuyến mãi</h2>
       <p class="text-muted small">Tạo và quản lý các mã giảm giá cho khách hàng</p>
     </div>
-    <button class="btn btn-primary shadow-sm"><i class="fas fa-plus me-2"></i>Tạo Voucher mới</button>
+    <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#createVoucherModal">
+      <i class="fas fa-plus me-2"></i>Tạo Voucher mới
+    </button>
   </div>
 
   <div class="row g-4">
-    <div class="col-md-6 col-lg-4" th:each="promo : ${promotions}">
+    <div class="col-md-6 col-lg-4" th:each="promo : ${promotion}">
       <div class="card promo-card h-100 bg-white shadow-sm">
         <div class="card-body p-4 text-center">
-          <div class="badge bg-primary-subtle text-primary mb-3 px-3 py-2 rounded-pill fw-bold coupon-code" th:text="${promo.code}">SUMMER2026</div>
-          <h5 class="fw-bold text-dark mb-1" th:text="${promo.discountValue} + '% OFF'">20% OFF</h5>
-          <p class="text-muted small mb-3" th:text="${promo.description}">Áp dụng cho tất cả đơn hàng từ 1.000.000đ</p>
+          <div class="badge bg-primary-subtle text-primary mb-3 px-3 py-2 rounded-pill fw-bold"
+               th:text="${promo.promotionName}">KHUYẾN MÃI HÈ</div>
+          <h5 class="fw-bold text-dark mb-1">
+            <span th:text="${#numbers.formatDecimal(promo.discountValue, 0, 'COMMA', 0, 'POINT')}">20</span>
+            <span th:text="${promo.discountType.name() == 'PERCENTAGE' ? '%' : 'đ'}"> OFF</span>
+          </h5>
 
-          <div class="d-flex justify-content-between align-items-center bg-light p-2 rounded mb-3">
-            <div class="small"><i class="far fa-calendar-alt me-1"></i> Hết hạn: <span th:text="${promo.endDate}">30/06/2026</span></div>
-            <div class="small fw-bold text-success" th:text="${promo.usageLeft} + ' lượt'">50 lượt</div>
+          <p class="text-muted small mb-1">
+            Bắt đầu: <span th:text="${#temporals.format(promo.startDate, 'dd/MM/yyyy')}">01/01/2026</span>
+          </p>
+
+          <div class="d-flex justify-content-center align-items-center bg-light p-2 rounded mb-3">
+            <div class="small">
+              <i class="far fa-calendar-alt me-1"></i>
+              Hết hạn: <span th:text="${#temporals.format(promo.endDate, 'dd/MM/yyyy')}">30/06/2026</span>
+            </div>
           </div>
 
           <div class="d-flex gap-2">
-            <button class="btn btn-sm btn-outline-secondary w-100"><i class="fas fa-edit me-1"></i>Sửa</button>
-            <button class="btn btn-sm btn-outline-danger w-100"><i class="fas fa-trash me-1"></i>Xóa</button>
+            <a href="" class="btn btn-sm btn-outline-secondary w-100">
+              <i class="fas fa-edit me-1"></i>Sửa
+            </a>
+            <button class="btn btn-sm btn-outline-danger w-100" onclick="">
+              <i class="fas fa-trash me-1"></i>Xóa
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </main>
+<div class="modal fade" id="createVoucherModal" tabindex="-1" aria-labelledby="createVoucherModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="createVoucherModalLabel"><i class="fas fa-ticket-alt me-2"></i>Thêm Khuyến Mãi Mới</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form>
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-bold small text-uppercase">Tên chương trình</label>
+              <input type="text" class="form-control" placeholder="Ví dụ: Giảm giá mùa Hè" required>
+            </div>
 
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-uppercase">Loại giảm giá</label>
+              <select class="form-select">
+                <option value="Percentage">Phần trăm (%)</option>
+                <option value="Fixed">Số tiền cố định (VNĐ)</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-uppercase">Giá trị giảm</label>
+              <div class="input-group">
+                <input type="number" class="form-control" placeholder="0.00" step="0.01" required>
+                <span class="input-group-text"><i class="fas fa-coins"></i></span>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-uppercase">Ngày bắt đầu</label>
+              <input type="datetime-local" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold small text-uppercase">Ngày kết thúc</label>
+              <input type="datetime-local" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-bold small text-uppercase">Mô tả ngắn</label>
+              <textarea class="form-control" rows="2" placeholder="Điều kiện áp dụng..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary px-4">Lưu Voucher</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="mt-auto" th:insert="~{layout :: footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

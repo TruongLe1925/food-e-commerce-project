@@ -3,6 +3,8 @@ package com.myproject.e_commerce.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "customer_details")
 @Getter
@@ -30,5 +32,8 @@ public class CustomerDetails {
     @ToString.Exclude
     @JoinColumn(name = "users_id")
     private User user;
-
+    @OneToMany(fetch = FetchType.LAZY
+            ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REFRESH, CascadeType.DETACH},mappedBy = "customerDetails")
+    private List<Orders> orders;
 }

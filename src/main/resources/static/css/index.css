@@ -10,6 +10,8 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+ /* Tùy chỉnh kích thước cho ảnh trong card */
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -10888,4 +10890,33 @@ header.bg-dark {
 /* 7. Footer - Để màu nâu đậm cho sạch và chuyên nghiệp */
 footer.bg-dark {
     background-color: #23140f !important;
+}
+ .product-img-fixed {
+     width: 100%;       /* Chiều rộng chiếm hết khung chứa */
+     height: 250px;     /* Bạn có thể thay đổi con số này cho phù hợp (vd: 200px, 300px) */
+     object-fit: cover; /* Quan trọng: Giữ tỉ lệ ảnh, cắt bớt phần thừa để lấp đầy khung */
+     object-position: center; /* Căn giữa ảnh */
+ }
+/* CSS cho thẻ Card sản phẩm */
+.card {
+    border: 1px solid #e0e0e0; /* Thêm viền màu xám nhạt */
+    border-radius: 8px;        /* Bo góc nhẹ cho hiện đại */
+    overflow: hidden;          /* Để ảnh không đè lên góc bo của card */
+    transition: all 0.3s ease; /* Tạo hiệu ứng mượt khi hover */
+    background-color: #fff;
+}
+
+/* Hiệu ứng khi di chuột vào */
+.card:hover {
+    border-color: #ffc107;     /* Đổi viền sang màu vàng khi hover */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ phía dưới */
+    transform: translateY(-5px); /* Nhích nhẹ lên trên một chút */
+}
+
+/* Tinh chỉnh ảnh sản phẩm */
+.product-img-fixed {
+    width: 100%;
+    height: 200px;             /* Chiều cao cố định */
+    object-fit: cover;         /* Giữ tỉ lệ ảnh không bị méo */
+    border-bottom: 1px solid #eee; /* Đường kẻ mảnh giữa ảnh và tên sản phẩm */
 }

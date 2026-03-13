@@ -46,5 +46,4 @@ public class OrderDetails {
     @ToString.Exclude
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
-
 }

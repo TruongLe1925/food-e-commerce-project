@@ -14,6 +14,31 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="/css/index.css" rel="stylesheet" />
         <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <style>
+                        /* CSS cho thẻ Card sản phẩm */
+            .card {
+                border: 1px solid #e0e0e0; /* Thêm viền màu xám nhạt */
+                border-radius: 8px;        /* Bo góc nhẹ cho hiện đại */
+                overflow: hidden;          /* Để ảnh không đè lên góc bo của card */
+                transition: all 0.3s ease; /* Tạo hiệu ứng mượt khi hover */
+                background-color: #fff;
+            }
+
+            /* Hiệu ứng khi di chuột vào */
+            .card:hover {
+                border-color: #ffc107;     /* Đổi viền sang màu vàng khi hover */
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ phía dưới */
+                transform: translateY(-5px); /* Nhích nhẹ lên trên một chút */
+            }
+
+            /* Tinh chỉnh ảnh sản phẩm */
+            .product-img-fixed {
+                width: 100%;
+                height: 200px;             /* Chiều cao cố định */
+                object-fit: cover;         /* Giữ tỉ lệ ảnh không bị méo */
+                border-bottom: 1px solid #eee; /* Đường kẻ mảnh giữa ảnh và tên sản phẩm */
+            }
+        </style>
     </head>
     <body>
         <!-- Navigation-->
@@ -90,14 +115,14 @@
                     <div class="col mb-5" th:each="product : ${product}">
                         <div class="card h-100">
                             <!-- Product image-->
-                            <img class="card-img-top" th:src="@{|/images/product/${product.imageUrl}|}" alt="..." />
+                            <img class="card-img-top product-img-fixed" th:src="@{|/images/product/${product.imageUrl}|}" alt="..." />
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
                                     <h5 class="fw-bolder"th:text="${product.productName}"></h5>
                                     <!-- Product price-->
-                                    <p th:text="${product.productPrice}"></p>
+                                    <p th:text="${#numbers.formatDecimal(product.productPrice, 0, 'POINT', 0, 'COMMA')} + ' đ'"></p>
                                 </div>
                             </div>
                             <!-- Product actions-->
