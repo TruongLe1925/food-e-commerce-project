@@ -27,10 +27,9 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link"><i class="fas fa-chart-line me-1"></i> Dashboard</a></li>
                 <li class="nav-item"><a th:href="@{/admin/product}" class="nav-link"><i class="fas fa-box me-1"></i> Sản phẩm</a></li>
-                <li class="nav-item"><a th:href="@{/admin/order}" class="nav-link"><i class="fas fa-shopping-cart me-1"></i> Đơn hàng</a></li>
                 <li class="nav-item"><a th:href="@{/admin/customer}" class="nav-link"><i class="fas fa-users me-1"></i> Khách hàng</a></li>
                 <li class="nav-item"><a th:href="@{/admin/promotion}" class="nav-link"><i class="fas fa-tags me-1"></i> Khuyến mãi</a></li>
-                <li class="nav-item"><a th:href="@{/admin/authority active}" class="nav-link active"><i class="fas fa-user-shield me-1"></i> Phân quyền</a></li>
+                <li class="nav-item"><a th:href="@{/admin/authority}" class="nav-link active"><i class="fas fa-user-shield me-1"></i> Phân quyền</a></li>
             </ul>
         </div>
     </div>
@@ -84,31 +83,40 @@
                             <th class="text-start ps-4">Tài khoản Manager</th>
                             <th>Manager (MAN)</th>
                             <th>Admin (ADM)</th>
+                            <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="m : ${managers}">
                             <td class="ps-4">
-                                <div class="fw-bold" th:text="${m.fullname}">Trần Thị B</div>
                                 <small class="text-muted" th:text="${m.username}">tran_b_manager</small>
                             </td>
+<!--                            <&#45;&#45;mai xem lai khuc nay &ndash;&gt;-->
+                            <td class="text-center">
+                                <i th:if="${#lists.contains(m.authorities.![authority.name()], 'ROLE_MANAGER')}"
+                                   class="fas fa-check-circle text-success fa-lg"></i>
+
+                                <i th:unless="${#lists.contains(m.authorities.![authority.name()], 'ROLE_MANAGER')}"
+                                   class="fas fa-times-circle text-light fa-lg"></i>
+                            </td>
 
                             <td class="text-center">
-                                <i th:if="${m.hasRole('MAN')}" class="fas fa-check-circle text-success fa-lg"></i>
-                                <i th:unless="${m.hasRole('MAN')}" class="fas fa-times-circle text-light fa-lg"></i>
-                            </td>
-                            <td class="text-center">
-                                <i th:if="${m.hasRole('ADM')}" class="fas fa-user-shield text-danger fa-lg"></i>
-                                <i th:unless="${m.hasRole('ADM')}" class="fas fa-times-circle text-light fa-lg"></i>
-                            </td>
+                                <i th:if="${#lists.contains(m.authorities.![authority.name()], 'ROLE_ADMIN')}"
+                                   class="fas fa-user-shield text-danger fa-lg"></i>
 
+                                <i th:unless="${#lists.contains(m.authorities.![authority.name()], 'ROLE_ADMIN')}"
+                                   class="fas fa-times-circle text-light fa-lg"></i>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success rounded-pill px-3" th:text="${m.enable}">Hoạt động</span>
+                            </td>
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm">
-                                    <a th:href="@{/admin/authority/edit/{id}(id=${m.id})}" class="btn btn-outline-primary border-0">
+                                    <a th:href="@{#}" class="btn btn-outline-primary border-0">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a th:href="@{/admin/authority/delete/{id}(id=${m.id})}"
+                                    <a th:href="@{#}"
                                        class="btn btn-outline-danger border-0"
                                        onclick="return confirm('Bạn có chắc chắn muốn xóa manager này?')">
                                         <i class="fas fa-trash"></i>

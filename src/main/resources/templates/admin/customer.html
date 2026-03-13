@@ -26,7 +26,6 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link"><i class="fas fa-chart-line me-1"></i> Dashboard</a></li>
                 <li class="nav-item"><a th:href="@{/admin/product}" class="nav-link"><i class="fas fa-box me-1"></i> Sản phẩm</a></li>
-                <li class="nav-item"><a th:href="@{/admin/order}" class="nav-link"><i class="fas fa-shopping-cart me-1"></i> Đơn hàng</a></li>
                 <li class="nav-item"><a th:href="@{/admin/customer}" class="nav-link active"><i class="fas fa-users me-1"></i> Khách hàng</a></li>
                 <li class="nav-item"><a th:href="@{/admin/promotion}" class="nav-link"><i class="fas fa-tags me-1"></i> Khuyến mãi</a></li>
                 <li class="nav-item"><a th:href="@{/admin/authority}" class="nav-link"><i class="fas fa-user-shield me-1"></i> Phân quyền</a></li>
@@ -45,11 +44,7 @@
             <div class="d-inline-flex gap-2">
                 <div class="bg-white px-3 py-2 rounded shadow-sm border-start border-primary border-4">
                     <small class="text-muted d-block">Tổng khách</small>
-                    <span class="fw-bold" th:text="${totalCustomers}">1,024</span>
-                </div>
-                <div class="bg-white px-3 py-2 rounded shadow-sm border-start border-success border-4">
-                    <small class="text-muted d-block">Mới (tháng này)</small>
-                    <span class="fw-bold">+45</span>
+                    <span class="fw-bold" th:text="${adminDashboardDTO.totalUsers}">1,024</span>
                 </div>
             </div>
         </div>
@@ -61,7 +56,6 @@
                 <input type="text" class="form-control" placeholder="Tìm email, SĐT...">
                 <button class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
             </div>
-            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-file-export me-1"></i> Xuất Excel</button>
         </div>
 
         <div class="table-responsive">
@@ -70,31 +64,33 @@
                 <tr>
                     <th class="border-0 ps-3">Khách hàng</th>
                     <th class="border-0">Liên hệ</th>
-                    <th class="border-0">Ngày đăng ký</th>
-                    <th class="border-0">Tổng chi tiêu</th>
+                    <th class="border-0">Địa chỉ</th>
                     <th class="border-0">Trạng thái</th>
                     <th class="border-0 text-end pe-3">Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user : ${customers}">
+                <tr th:each="user : ${cus}">
                     <td class="ps-3">
                         <div class="d-flex align-items-center">
                             <div class="avatar-circle me-3" th:text="${#strings.substring(user.fullName,0,1)}">N</div>
                             <div>
                                 <div class="fw-bold text-dark" th:text="${user.fullName}">Nguyễn Văn An</div>
-                                <small class="text-muted" th:text="'ID: #' + ${user.id}">ID: #123</small>
                             </div>
                         </div>
                     </td>
                     <td>
                         <div class="small"><i class="fas fa-envelope me-1 text-muted"></i> <span th:text="${user.email}">an.nguyen@gmail.com</span></div>
-                        <div class="small"><i class="fas fa-phone me-1 text-muted"></i> <span th:text="${user.phone}">0901234567</span></div>
+                        <div class="small"><i class="fas fa-phone me-1 text-muted"></i> <span th:text="${user.phoneNumber}">0901234567</span></div>
                     </td>
-                    <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}">15/01/2026</td>
-                    <td class="fw-bold text-success" th:text="${user.totalSpent}">5.200.000đ</td>
+
                     <td>
-                        <span class="badge bg-success-subtle text-success rounded-pill px-3">Hoạt động</span>
+                        <div class="small text-muted text-wrap" style="max-width: 200px;" th:text="${user.address}">
+                            123 Đường ABC, Quận 1, TP.HCM
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-success-subtle text-success rounded-pill px-3" th:text="${user.enabled}">Hoạt động</span>
                     </td>
                     <td class="text-end pe-3">
                         <button class="btn btn-sm btn-light border" title="Xem lịch sử mua hàng"><i class="fas fa-history text-primary"></i></button>

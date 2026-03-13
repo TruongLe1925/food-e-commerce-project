@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.generator.EventType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -50,6 +52,15 @@ public class Product {
     @OneToMany(cascade = {CascadeType.DETACH,CascadeType.REFRESH,
             CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "product")
     private List<CartItems> cartItems;
+    public void addCategory(Category category){
+        if(this.categories == null){ // Kiểm tra danh sách của Product
+            this.categories = new ArrayList<>();
+        }
+        if(category != null) {
+            this.categories.add(category);
+            category.getProducts().add(this);
+        }
+    }
     @Override
     public String toString() {
         return "Product{" +
