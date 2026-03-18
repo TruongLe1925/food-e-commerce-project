@@ -10,10 +10,8 @@ import java.util.List;
 public interface AdminService {
     AdminDashboardDTO AdminDashboard();
     List<ProductDashboardDTO> findAllProducts();
-    List<CustomerDetailDTO> findAllCustomer();
     List<AuthorityDTO> findAllAuthorities();
     List<ProductDashboardDTO> findAllProductsByCategory(Integer id);
     List<ProductDashboardDTO> findProductsByStock(ProductStock productStock);
     List<ProductDashboardDTO> searchProduct(String keyword);
-    void addProduct(AddProductDTO addProductDTO);
 }

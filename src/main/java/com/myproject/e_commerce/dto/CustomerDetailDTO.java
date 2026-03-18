@@ -17,5 +17,7 @@ public class CustomerDetailDTO {
     private String fullName;
     private String phoneNumber;
     private String address;
+    private BigDecimal totalExpenditure;
     private String enabled;
+    private Integer id;
 }
