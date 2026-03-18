@@ -51,10 +51,22 @@
                 <div class="card-body p-2">
                     <div class="list-group category-list">
                         <a th:href="@{/admin/product}" class="list-group-item list-group-item-action">Tất cả sản phẩm</a>
-                        <a th:each="cat : ${category}" th:href="@{/admin/product(catId=${cat.id})}"
-                           th:text="${cat.name}" class="list-group-item list-group-item-action">
-                            Điện thoại
-                        </a>
+
+                        <div th:each="cat : ${category}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-0">
+                            <a th:href="@{/admin/product(catId=${cat.id})}"
+                               th:text="${cat.name}"
+                               class="flex-grow-1 p-2 text-decoration-none text-dark">
+                                Điện thoại
+                            </a>
+
+                            <form th:action="@{/admin/deleteCategory}" method="POST"
+                                  onsubmit="return confirm('Bạn có chắc muốn xóa danh mục này?')">
+                                <input type="hidden" name="id" th:value="${cat.id}" />
+                                <button type="submit" class="btn btn-sm text-danger border-0 pe-3">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -78,7 +90,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="h4 fw-bold text-dark mb-0">Quản lý Sản phẩm</h2>
                 <div class="d-flex gap-2">
-                    <form th:action="@{/admin/product}" method="get">
+                    <form th:action="@{/admin/product}" method="GET">
                         <div class="input-group input-group-sm" style="width: 350px;">
                             <input type="text"
                                    name="keyword"
@@ -129,7 +141,7 @@
                                 <small class="text-muted ms-1">cái</small>
                             </td>
 
-                            <td class="text-primary fw-bold" th:text="${p.price}">29.000.000đ</td>
+                            <td class="text-primary fw-bold" th:text="${#numbers.formatDecimal(p.price, 0, 'POINT', 0, 'COMMA')} + ' đ'">29.000.000đ</td>
                             <td>
                                 <span th:text="${p.productStock.name()}" class="badge bg-success-subtle text-success">Còn hàng</span>
                             <td class="text-end">
@@ -138,10 +150,23 @@
                                         <i class="fas fa-cog text-secondary"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
-                                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2 text-primary"></i>Sửa</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2 text-info"></i>Xem chi tiết</a></li>
+                                        <li><a class="dropdown-item" th:href="@{/admin/editProduct/{id}(id = ${p.productId})}"><i class="fas fa-edit me-2 text-primary"></i>Sửa</a></li>
+                                        <li><a class="dropdown-item" th:href="@{/admin/viewProductDetail/{id}(id = ${p.productId})}"><i class="fas fa-eye me-2 text-info"></i>Xem chi tiết</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Xóa</a></li>
+                                        <li>
+                                            <form th:action="@{/admin/deleteProduct}" method="POST">
+                                                <input type="hidden" name="id" th:value="${p.productId}">
+
+                                                <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start">
+                                                    <i class="fas fa-trash me-2"></i>Xóa
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" th:href="@{/admin/assignCategory/{id}(id=${p.productId})}">
+                                                <i class="fas fa-tags me-2 text-info"></i>Gán danh mục
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
@@ -165,18 +190,18 @@
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label class="form-label fw-bold small">Tên sản phẩm</label>
-                            <input type="text" name="name" th:field="*{productName}" class="form-control" placeholder="Nhập tên sản phẩm..." required>
+                            <input type="text"  th:field="*{productName}" class="form-control" placeholder="Nhập tên sản phẩm..." required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small">Giá bán (Decimal)</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" th:field="*{price}" step="0.01" name="price" class="form-control" placeholder="0.00" required>
+                                <input type="number" th:field="*{price}" step="0.01" class="form-control" placeholder="0.00" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small">Số lượng tồn kho</label>
-                            <input th:field="*{quantity}" type="number" name="stock" class="form-control" placeholder="0" required>
+                            <input th:field="*{quantity}" type="number"  class="form-control" placeholder="0" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small">Ảnh chính (Thumbnail)</label>
@@ -187,27 +212,8 @@
                             <input type="file" name="fileImage" class="form-control" accept="image/*">
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label fw-bold small">Danh mục (Chọn nhiều)</label>
-                            <div class="card p-3 border-1 shadow-none" style="max-height: 150px; overflow-y: auto;">
-                                <div class="row">
-                                    <div th:each="cat : ${category}" class="col-md-4 mb-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"
-                                                   th:field="*{categories}"
-                                                   th:value="${cat.id}"
-                                                   th:id="'cat' + ${cat.id}">
-                                            <label class="form-check-label small" th:for="'cat' + ${cat.id}" th:text="${cat.name}">
-                                                Tên danh mục
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
                             <label class="form-label fw-bold small">Mô tả sản phẩm</label>
-                            <textarea th:field="*{description}" name="description" class="form-control" rows="4" placeholder="Nhập mô tả ngắn gọn..."></textarea>
+                            <textarea th:field="*{description}" class="form-control" rows="4" placeholder="Nhập mô tả ngắn gọn..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -228,23 +234,23 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form th:action="@{/admin/category/add}" method="POST" enctype="multipart/form-data">
+            <form th:action="@{/admin/addCategory}" th:object="${addCategory}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold small">Tên danh mục</label>
-                        <input type="text" name="name" class="form-control"
+                        <input type="text" th:field="*{name}" class="form-control"
                                placeholder="VD: Điện thoại, Laptop..." required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold small">Ảnh đại diện (Thumbnail)</label>
-                        <input type="file" name="fileThumbnail" class="form-control" accept="image/*">
+                        <input type="file" name="fileThumbnailCat" class="form-control" accept="image/*">
                         <div class="form-text">Dùng để hiển thị ngoài trang chủ.</div>
                     </div>
 
                     <div class="mb-0">
                         <label class="form-label fw-bold small">Mô tả danh mục</label>
-                        <textarea name="description" class="form-control" rows="3"
+                        <textarea name="description" th:field="*{description}" class="form-control" rows="3"
                                   placeholder="Mô tả ngắn về nhóm sản phẩm này..."></textarea>
                     </div>
                 </div>

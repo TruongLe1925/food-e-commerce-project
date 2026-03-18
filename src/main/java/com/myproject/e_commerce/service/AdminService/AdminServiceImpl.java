@@ -58,23 +58,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<ProductDashboardDTO> findAllProducts() {
-        List<Product> products = productDAO.getProducts();
+        List<Product> products = productRepository.findAll();
         return admin.getProducts(products);
     }
 
-    @Override
-    public List<CustomerDetailDTO> findAllCustomer() {
-        List<CustomerDetails> customerDetails = customerDAO.findAllCustomerDetails();
-        return  customerDetails.stream().map(cus -> CustomerDetailDTO.builder()
-                        .username(cus.getUser().getUsername())
-                        .email(cus.getEmail())
-                        .fullName(cus.getFullName())
-                        .enabled(cus.getUser().isEnabled() == true?"active":"inactive")
-                        .phoneNumber(cus.getFullName())
-                        .address(cus.getAddress())
-                        .build())
-                .toList();
-    }
 
     @Override
     public List<AuthorityDTO> findAllAuthorities() {
@@ -109,24 +96,5 @@ public class AdminServiceImpl implements AdminService {
         String lowercase = keyword.toLowerCase();
         List<Product> products = productDAO.SearchProduct(lowercase);
         return admin.getProducts(products);
-    }
-    @Transactional
-    @Override
-    public void addProduct(AddProductDTO addProductDTO) {
-        Product product = Product.builder()
-                .name(addProductDTO.getProductName())
-                .price(addProductDTO.getPrice())
-                .stock(addProductDTO.getQuantity())
-                .imageUrl(addProductDTO.getImageUrl())
-                .thumbnailUrl(addProductDTO.getThumbnailUrl())
-                .build();
-        List<Integer> categories = addProductDTO.getCategories();
-        if (categories != null && !categories.isEmpty()) {
-            List<Category> category = categoryRepository.findAllById(categories);
-            for (Category cat : category) {
-                product.addCategory(cat);
-            }
-        }
-        productRepository.save(product);
     }
 }

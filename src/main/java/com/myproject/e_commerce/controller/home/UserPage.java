@@ -32,7 +32,7 @@ public class UserPage {
         return "/user-profile/customer-details";
     }
     @PostMapping("/update")
-    public String updateCustomerDetails(CustomerDetailDTO customerDetailDTO, Principal principal){
+    public String updateCustomerDetails(@ModelAttribute("user") CustomerDetailDTO customerDetailDTO, Principal principal){
         String username = principal.getName();
         customerService.updateCustomerDetails(username,customerDetailDTO);
         return "redirect:/cus/customerdetail";

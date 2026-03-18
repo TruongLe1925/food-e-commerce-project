@@ -11,4 +11,7 @@ public interface CustomerDAO {
     boolean existsByEmail(String email);
     User getUserAndUserDetailsByUsername(String username);
     List<CustomerDetails> findAllCustomerDetails();
+    CustomerDetails findCustomerDetailsById(Integer id);
+    List<CustomerDetails> searchCustomer(String keyword);
+    User getEmployeeByUsername(String username);
 }

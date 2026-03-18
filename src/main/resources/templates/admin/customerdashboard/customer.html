@@ -53,8 +53,18 @@
     <div class="card border-0 shadow-sm p-3">
         <div class="d-flex justify-content-between mb-3">
             <div class="input-group input-group-sm w-25">
-                <input type="text" class="form-control" placeholder="Tìm email, SĐT...">
-                <button class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
+                <form th:action="@{/admin/customer}" method="GET">
+                    <div class="input-group input-group-sm" style="width: 350px;">
+                        <input type="text"
+                               name="keyword"
+                               th:value="${param.keyword}"
+                               class="form-control"
+                               placeholder="Tìm tên người ...">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -93,8 +103,18 @@
                         <span class="badge bg-success-subtle text-success rounded-pill px-3" th:text="${user.enabled}">Hoạt động</span>
                     </td>
                     <td class="text-end pe-3">
-                        <button class="btn btn-sm btn-light border" title="Xem lịch sử mua hàng"><i class="fas fa-history text-primary"></i></button>
-                        <button class="btn btn-sm btn-light border" title="Khóa tài khoản"><i class="fas fa-user-slash text-danger"></i></button>
+                        <a th:href="@{/admin/viewCustomerDetail/{id}(id=${user.id})}" class="btn btn-sm btn-light border" title="Xem lịch sử mua hàng">
+                            <i class="fas fa-history text-primary"></i>
+                        </a>
+                        <form th:action="@{/admin/toggle-status}" method="POST" style="display: inline;">
+                            <input type="hidden" name="username" th:value="${user.username}"/>
+
+                            <button type="submit" th:if="${user.enabled}"
+                                    class="btn btn-sm btn-outline-danger border"
+                                    title="Khóa tài khoản, mở tài ">
+                                <i class="fas fa-lock"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

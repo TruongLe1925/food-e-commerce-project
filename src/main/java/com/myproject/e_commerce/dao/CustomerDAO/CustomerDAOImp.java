@@ -1,6 +1,7 @@
 package com.myproject.e_commerce.dao.CustomerDAO;
 
 import com.myproject.e_commerce.entity.CustomerDetails;
+import com.myproject.e_commerce.entity.Product;
 import com.myproject.e_commerce.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -43,4 +44,26 @@ public class CustomerDAOImp implements CustomerDAO {
         TypedQuery<CustomerDetails> query = entityManager.createQuery("SELECT c FROM CustomerDetails c LEFT JOIN FETCH c.user", CustomerDetails.class);
         return query.getResultList();
     }
+
+    @Override
+    public CustomerDetails findCustomerDetailsById(Integer id) {
+        TypedQuery<CustomerDetails> query = entityManager.createQuery("SELECT c FROM CustomerDetails c LEFT JOIN FETCH c.orders ord LEFT JOIN FETCH ord.orderDetails WHERE c.id = :id", CustomerDetails.class);
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public List<CustomerDetails> searchCustomer(String keyword) {
+        TypedQuery<CustomerDetails> query = entityManager.createQuery("FROM CustomerDetails c WHERE c.fullName LIKE : keyword ", CustomerDetails.class);
+        query.setParameter("keyword", "%" + keyword + "%");
+        return query.getResultList();
+    }
+
+    @Override
+    public User getEmployeeByUsername(String username) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u LEFT JOIN FETCH u.authorities WHERE u.username = :username", User.class);
+        query.setParameter("username", username);
+        return query.getSingleResult();
+    }
+
 }
