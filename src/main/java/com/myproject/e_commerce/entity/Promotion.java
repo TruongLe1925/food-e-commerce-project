@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -33,5 +34,5 @@ public class Promotion {
     private LocalDate endDate;
     @OneToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.REFRESH,
             CascadeType.MERGE,CascadeType.PERSIST},mappedBy = "promotion")
-    private List<OrderDetails> orderDetails;
+    private List<Orders> Orders;
 }

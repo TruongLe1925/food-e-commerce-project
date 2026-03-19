@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 
 @Controller
@@ -22,8 +23,8 @@ public class InCart {
         this.orderService = orderService;
     }
     @GetMapping("/showCart")
-    public String cart(Model model, Principal principal) {
-        CartResponseDTO inCartDTOS = cartService.getCart(principal.getName());
+    public String cart(Model model, Principal principal,@RequestParam(value = "code",required = false) String code ) {
+        CartResponseDTO inCartDTOS = cartService.getCart(principal.getName(),code);
         model.addAttribute("itemCarts", inCartDTOS);
         return "/shop-homepage/shopping-cart";
     }
@@ -33,8 +34,11 @@ public class InCart {
         return "redirect:/cart/showCart";
     }
     @PostMapping("/checkout")
-    public String checkout(Principal principal, @RequestParam("note") String note) {
-        orderService.addToOrder(principal.getName(), note);
+    public String checkout(Principal principal, @RequestParam(value = "note",required = false) String note
+            , @RequestParam(value = "voucherCode",required = false) String code
+            , @RequestParam(value = "cartTotalPrice")BigDecimal cartTotalPrice
+            , @RequestParam(value = "discountTotalPrice") BigDecimal discountTotalPrice) {
+        orderService.addToOrder(principal.getName(), note,code,cartTotalPrice,discountTotalPrice);
         return "redirect:/cart/showCart";
     }
 

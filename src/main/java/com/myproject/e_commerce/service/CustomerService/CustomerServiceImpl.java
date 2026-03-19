@@ -10,6 +10,8 @@ import com.myproject.e_commerce.entity.User;
 import com.myproject.e_commerce.repository.AuthorityRepository;
 import com.myproject.e_commerce.repository.CustomerDetailsRepository;
 import com.myproject.e_commerce.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,6 +147,29 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
+    public Page<CustomerDetailDTO> searchCustomer(String keyword, Pageable pageable) {
+        return customerDetailsRepository.findByKeyword(keyword, pageable)
+                .map(this::convertToDTO);
+    }
+
+    @Override
+    public Page<CustomerDetailDTO> findAllCustomer(Pageable pageable) {
+        return customerDetailsRepository.findAll(pageable)
+                .map(this::convertToDTO);
+    }
+
+    private CustomerDetailDTO convertToDTO(CustomerDetails cus) {
+        return CustomerDetailDTO.builder()
+                .username(cus.getUser().getUsername())
+                .email(cus.getEmail())
+                .id(cus.getId())
+                .fullName(cus.getFullName())
+                .enabled(cus.getUser().isEnabled() ? "active" : "inactive")
+                .phoneNumber(cus.getPhoneNumber())
+                .address(cus.getAddress())
+                .build();
+    }
+    @Override
     public List<CustomerDetailDTO> findAllCustomer() {
         List<CustomerDetails> customerDetails = customerDAO.findAllCustomerDetails();
         return  customerDetails.stream().map(cus -> CustomerDetailDTO.builder()
@@ -153,7 +178,7 @@ public class CustomerServiceImpl implements CustomerService{
                         .id(cus.getId())
                         .fullName(cus.getFullName())
                         .enabled(cus.getUser().isEnabled() == true?"active":"inactive")
-                        .phoneNumber(cus.getFullName())
+                        .phoneNumber(cus.getPhoneNumber())
                         .address(cus.getAddress())
                         .build())
                 .toList();

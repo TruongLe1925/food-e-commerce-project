@@ -15,7 +15,7 @@ CREATE TABLE `orders` (
     ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `orders_detail` (
+CREATE TABLE `order_details` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `product_id` INT,
     `promotion_id` INT,
@@ -39,3 +39,21 @@ CREATE TABLE `promotion` (
   `end_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `orders` 
+ADD COLUMN `promotion_id` INT,
+`original_price` DECIMAL(15, 2),
+`discount_price` DECIMAL(15, 2);
+ADD CONSTRAINT `fk_orders_promotion` 
+FOREIGN KEY (`promotion_id`) REFERENCES `promotion` (`id`)
+ON DELETE SET NULL ON UPDATE NO ACTION;
+ALTER TABLE `orders` 
+ADD COLUMN `original_price` DECIMAL(15, 2),
+ADD COLUMN `discount_price` DECIMAL(15, 2);
+
+ALTER TABLE `order_details` 
+DROP FOREIGN KEY `fk_od_promotion`;
+
+-- 2. Xóa 2 cột không cần thiết
+ALTER TABLE `orders_details` 
+DROP COLUMN `promotion_id`;

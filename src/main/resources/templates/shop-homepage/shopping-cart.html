@@ -85,6 +85,18 @@
 
         <div class="col-lg-4">
             <div class="card shadow-sm border-0 p-4">
+
+                <form th:action="@{/cart/showCart}" method="GET" class="card shadow-sm border-0 p-3 mb-3">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-ticket-perforated me-2"></i>Mã giảm giá
+                    </h6>
+                    <div class="input-group">
+                        <input type="text" name="code" class="form-control form-control-sm"
+                               placeholder="Nhập mã voucher..." th:value="${param.code}">
+                        <button class="btn btn-outline-dark btn-sm" type="submit">Kiểm tra</button>
+                    </div>
+                </form>
+
                 <h5 class="fw-bold mb-4">Chi tiết thanh toán</h5>
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Tạm tính</span>
@@ -95,9 +107,19 @@
                     <span class="text-success">Miễn phí</span>
                 </div>
                 <hr>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Giảm giá</span>
+                    <span class="text-danger" th:text="${'-' + itemCarts.discountTotalPrice}">-0đ</span>
+                </div>
+
+                <hr>
+
                 <div class="d-flex justify-content-between mb-4">
                     <span class="fw-bold fs-5">Tổng cộng</span>
-                    <span class="fw-bold fs-5 text-dark" th:text="${itemCarts.cartTotalPrice}">165.000đ</span>
+                    <span class="fw-bold fs-5 text-primary"
+                          th:text="${itemCarts.cartTotalPrice > itemCarts.discountTotalPrice ? itemCarts.discountTotalPrice : itemCarts.cartTotalPrice}">
+                         165.000đ
+                    </span>
                 </div>
 
                 <form th:action="@{/cart/checkout}" method="POST">
@@ -106,6 +128,9 @@
                         <textarea class="form-control" id="orderNote" name="note"
                                   rows="3" placeholder="Ví dụ: Giao giờ hành chính, hoa tươi ít lá..."></textarea>
                     </div>
+                    <input type="hidden" name="voucherCode" th:value="${param.code}">
+                    <input type="hidden" name="cartTotalPrice" th:value="${itemCarts.discountTotalPrice}">
+                    <input type="hidden" name="discountTotalPrice" th:value="${itemCarts.cartTotalPrice}">
                     <button type="submit" class="btn btn-checkout btn-lg w-100 py-3">THANH TOÁN</button>
                 </form>
             </div>

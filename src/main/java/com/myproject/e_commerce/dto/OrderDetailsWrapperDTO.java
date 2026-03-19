@@ -1,5 +1,6 @@
 package com.myproject.e_commerce.dto;
 
+import com.myproject.e_commerce.constants.DiscountType;
 import com.myproject.e_commerce.constants.StatusOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,8 @@ public class OrderDetailsWrapperDTO {
     private CustomerDetailDTO customerDetailDTO;
     private LocalDateTime orderDate;
     private Integer orderId;
+    private String discountName;
+    private DiscountType discountType;
     private BigDecimal grandTotalPrice;
     private StatusOrder status;
 }

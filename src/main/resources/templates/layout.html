@@ -26,22 +26,22 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" th:href="@{/}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">All Products</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                        <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
-                    </ul>
-                </li>
+<!--                <li class="nav-item dropdown">-->
+<!--                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>-->
+<!--                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+<!--                        <li><a class="dropdown-item" href="#!">All Products</a></li>-->
+<!--                        <li><hr class="dropdown-divider" /></li>-->
+<!--                        <li><a class="dropdown-item" href="#!">Popular Items</a></li>-->
+<!--                        <li><a class="dropdown-item" href="#!">New Arrivals</a></li>-->
+<!--                    </ul>-->
+<!--                </li>-->
             </ul>
             <form class="d-flex">
                 <div sec:authorize="hasRole('CUSTOMER')" class="ms-2">
                     <a th:href="@{/cart/showCart}" class="btn btn-outline-dark d-flex align-items-center">
                         <i class="bi-cart-fill me-1"></i>
                         <span>Cart</span>
-                        <span class="badge bg-dark text-white ms-1 rounded-pill" th:text="${session.cartCount != null ? session.cartCount : 0}">0</span>
+                        <span class="badge bg-dark text-white ms-1 rounded-pill"></span>
                     </a>
                 </div>
 

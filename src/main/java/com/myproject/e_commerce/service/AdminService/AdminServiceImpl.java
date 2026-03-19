@@ -1,16 +1,14 @@
 package com.myproject.e_commerce.service.AdminService;
 
 import com.myproject.e_commerce.constants.ProductStock;
+import com.myproject.e_commerce.constants.StatusOrder;
 import com.myproject.e_commerce.dao.AdminDAO.AdminDAO;
 import com.myproject.e_commerce.dao.CustomerDAO.CustomerDAO;
 import com.myproject.e_commerce.dao.OrderDAO.OrderDetailsDAO;
 import com.myproject.e_commerce.dao.ProductDAO.ProductDAO;
 import com.myproject.e_commerce.dto.*;
 import com.myproject.e_commerce.entity.*;
-import com.myproject.e_commerce.repository.CategoryRepository;
-import com.myproject.e_commerce.repository.OrderDetailsRepository;
-import com.myproject.e_commerce.repository.OrdersRepository;
-import com.myproject.e_commerce.repository.ProductRepository;
+import com.myproject.e_commerce.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +25,13 @@ public class AdminServiceImpl implements AdminService {
     private final ProductDAO productDAO;
     private final CustomerDAO customerDAO;
     private final Admin admin;
+    private final OrdersRepository ordersRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    public  AdminServiceImpl(CategoryRepository categoryRepository,ProductRepository productRepository,CustomerDAO customerDAO,AdminDAO adminDAO,OrderDetailsRepository orderDetailsRepository,ProductDAO productDAO,Admin admin) {
+    private final BannerRepository bannerRepository;
+    public  AdminServiceImpl(BannerRepository bannerRepository,OrdersRepository ordersRepository,CategoryRepository categoryRepository,ProductRepository productRepository,CustomerDAO customerDAO,AdminDAO adminDAO,OrderDetailsRepository orderDetailsRepository,ProductDAO productDAO,Admin admin) {
+        this.bannerRepository = bannerRepository;
+        this.ordersRepository = ordersRepository;
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.admin = admin;
@@ -43,9 +45,10 @@ public class AdminServiceImpl implements AdminService {
         long totalProducts = adminDAO.countAllProducts();
         long totalOrders = adminDAO.countAllOrders();
         long totalUsers = adminDAO.countAllUsers();
-        List<OrderDetails> orderDetailsList = orderDetailsRepository.findAll();
-        BigDecimal total = orderDetailsList.stream()
-                .map(OrderDetails::getOriginalPrice)
+        List<Orders> orders = ordersRepository.findAll();
+        BigDecimal total = orders.stream()
+                .filter(or -> or.getStatus().getStatus() == StatusOrder.COMPLETED)
+                .map(Orders::getDiscountPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         AdminDashboardDTO adminDashboardDTO = AdminDashboardDTO.builder()
                 .totalOrders(totalOrders)
@@ -96,5 +99,23 @@ public class AdminServiceImpl implements AdminService {
         String lowercase = keyword.toLowerCase();
         List<Product> products = productDAO.SearchProduct(lowercase);
         return admin.getProducts(products);
+    }
+    @Transactional
+    @Override
+    public void changeBanner(String imageUrl) {
+        bannerRepository.deleteAll();
+        Banner changeBanner = Banner.builder()
+                .imageUrl(imageUrl)
+                .build();
+        bannerRepository.save(changeBanner);
+    }
+
+    @Override
+    public BannerDTO banner() {
+        Banner banner = bannerRepository.findFirstByOrderByIdAsc();
+        BannerDTO bannerDTO = BannerDTO.builder()
+                .imageUrl(banner.getImageUrl())
+                .build();
+        return bannerDTO;
     }
 }
