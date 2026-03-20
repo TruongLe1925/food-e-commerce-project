@@ -14,6 +14,7 @@ import com.myproject.e_commerce.service.FileService;
 import com.myproject.e_commerce.service.OrderService.OrderService;
 import com.myproject.e_commerce.service.ProductService.ProductService;
 import com.myproject.e_commerce.service.PromotionService.PromotionService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -143,7 +143,6 @@ public class AdminController {
                                  @RequestParam("productId") Integer productId,
                                  @RequestParam(value = "thumbnail",required = false) MultipartFile thumbail,
                                  @RequestParam(value = "image",required = false) MultipartFile image) {
-
         if (!thumbail.isEmpty()) {
             String thumbnailName = fileService.save(thumbail);
             productDashboardDTO.setThumbnailUrl(thumbnailName);
@@ -157,10 +156,10 @@ public class AdminController {
     }
 
 
-
+    @Value("${page-size}")
+    private int pageSize;
     @GetMapping("/customer")
     public String customer(Model model,@RequestParam(name = "keyword",required = false) String keyword,@RequestParam(name = "page", defaultValue = "0") int page){
-        int pageSize = 5;
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<CustomerDetailDTO> customerPage;
 
@@ -191,9 +190,6 @@ public class AdminController {
         model.addAttribute("customer",customerDetailDTO);
         return  "/admin/customerdashboard/viewCustomerDetail";
     }
-
-
-
     @GetMapping("/authority")
     public   String authority(Model model) {
         List<AuthorityDTO> authorities = adminService.findAllAuthorities();
