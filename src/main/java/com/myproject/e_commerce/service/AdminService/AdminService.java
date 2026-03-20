@@ -14,4 +14,6 @@ public interface AdminService {
     List<ProductDashboardDTO> findAllProductsByCategory(Integer id);
     List<ProductDashboardDTO> findProductsByStock(ProductStock productStock);
     List<ProductDashboardDTO> searchProduct(String keyword);
+    void changeBanner(String imageUrl);
+    BannerDTO banner();
 }

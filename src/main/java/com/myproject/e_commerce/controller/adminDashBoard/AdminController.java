@@ -14,11 +14,14 @@ import com.myproject.e_commerce.service.FileService;
 import com.myproject.e_commerce.service.OrderService.OrderService;
 import com.myproject.e_commerce.service.ProductService.ProductService;
 import com.myproject.e_commerce.service.PromotionService.PromotionService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +54,14 @@ public class AdminController {
         model.addAttribute("adminDashboardDTO", adminDashboardDTO);
         return "admin/admin-dashboard";
     }
+    @PostMapping("/changeBanner")
+    public String changeBanner(@RequestParam("imageFile") MultipartFile image) {
+        String banner = fileService.saveBanner(image);
+        adminService.changeBanner(banner);
+        return "redirect:/admin/dashboard";
+    }
+
+
     @GetMapping("/product")
     public  String product(Model model,@RequestParam(name = "catId", required = false) Integer id,
                            @RequestParam(name = "status", required = false) ProductStock productStock,
@@ -132,7 +143,6 @@ public class AdminController {
                                  @RequestParam("productId") Integer productId,
                                  @RequestParam(value = "thumbnail",required = false) MultipartFile thumbail,
                                  @RequestParam(value = "image",required = false) MultipartFile image) {
-
         if (!thumbail.isEmpty()) {
             String thumbnailName = fileService.save(thumbail);
             productDashboardDTO.setThumbnailUrl(thumbnailName);
@@ -146,19 +156,28 @@ public class AdminController {
     }
 
 
-
+    @Value("${page-size}")
+    private int pageSize;
     @GetMapping("/customer")
-    public String customer(Model model,@RequestParam(name = "keyword",required = false) String keyword){
-        List<CustomerDetailDTO> customerDetailDTOS;
-        if(keyword != null){
-            customerDetailDTOS = customerService.searchCustomer(keyword);
-        }else{
-            customerDetailDTOS = customerService.findAllCustomer();
+    public String customer(Model model,@RequestParam(name = "keyword",required = false) String keyword,@RequestParam(name = "page", defaultValue = "0") int page){
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<CustomerDetailDTO> customerPage;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            customerPage = customerService.searchCustomer(keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        } else {
+            customerPage = customerService.findAllCustomer(pageable);
         }
+
         AdminDashboardDTO adminDashboardDTO = adminService.AdminDashboard();
         model.addAttribute("adminDashboardDTO", adminDashboardDTO);
-        model.addAttribute("cus",customerDetailDTOS);
-        return  "admin/customerdashboard/customer";
+        model.addAttribute("cusPage", customerPage);
+        model.addAttribute("cus", customerPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", customerPage.getTotalPages());
+
+        return "admin/customerdashboard/customer";
     }
     @PostMapping("/toggle-status")
     public String toggleStatus(@RequestParam("username") String username) {
@@ -171,9 +190,6 @@ public class AdminController {
         model.addAttribute("customer",customerDetailDTO);
         return  "/admin/customerdashboard/viewCustomerDetail";
     }
-
-
-
     @GetMapping("/authority")
     public   String authority(Model model) {
         List<AuthorityDTO> authorities = adminService.findAllAuthorities();

@@ -24,7 +24,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDetailsRepository orderDetailsRepository;
     private final OrderDetailsDAO orderDetailsDAO;
     private final OrderProcess orderProcess;
-    public OrderServiceImpl(OrderProcess orderProcess,OrderDetailsDAO orderDetailsDAO,OrdersRepository ordersRepository,CustomerDetailsRepository customerDetailsRepository, StatusRepository statusRepository,CartItemsRepository cartItemsRepository, OrderDetailsRepository orderDetailsRepository,CartRepository cartRepository) {
+    private final PromotionRepository promotionRepository;
+    public OrderServiceImpl(PromotionRepository promotionRepository,OrderProcess orderProcess,OrderDetailsDAO orderDetailsDAO,OrdersRepository ordersRepository,CustomerDetailsRepository customerDetailsRepository, StatusRepository statusRepository,CartItemsRepository cartItemsRepository, OrderDetailsRepository orderDetailsRepository,CartRepository cartRepository) {
+        this.promotionRepository = promotionRepository;
         this.orderProcess = orderProcess;
         this.orderDetailsDAO = orderDetailsDAO;
         this.orderDetailsRepository = orderDetailsRepository;
@@ -36,15 +38,18 @@ public class OrderServiceImpl implements OrderService {
     }
     @Transactional
     @Override
-    public void addToOrder(String username, String note) {
+    public void addToOrder(String username, String note,String code,BigDecimal cartTotalPrice,BigDecimal discountTotalPrice) {
         CustomerDetails customerDetails =  customerDetailsRepository.findByUserUsername(username).orElse(null);
-        Status status = statusRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Lỗi: Hệ thống chưa cấu hình trạng thái PENDING"));
+        Status status = statusRepository.findByStatus(StatusOrder.PENDING);
+        Promotion promotion = promotionRepository.findByName(code);
         Cart cart = cartRepository.findByUser(customerDetails.getUser()).orElse(null);
         Orders orders = Orders.builder()
                 .customerDetails(customerDetails)
                 .status(status)
+                .promotion(promotion)
                 .orderAddress("BlaBlaBla")
+                .originalPrice(cartTotalPrice)
+                .discountPrice(discountTotalPrice)
                 .note(note)
                 .build();
         for (CartItems item : cart.getCartItems()) {
@@ -84,6 +89,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailsWrapperDTO getOrderDetails(Integer orderId,String username) {
         Orders orders = orderDetailsDAO.findOrderById(orderId);
+        Promotion promotion = orders.getPromotion();
         if (!orders.getCustomerDetails().getUser().getUsername().equals(username)) {
             throw new org.springframework.web.server.ResponseStatusException(
                     org.springframework.http.HttpStatus.FORBIDDEN, "Bạn không có quyền xem đơn hàng này!");

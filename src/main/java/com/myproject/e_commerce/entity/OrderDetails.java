@@ -38,12 +38,5 @@ public class OrderDetails {
     @ToString.Exclude
     @JoinColumn(name = "order_id")
     private Orders orders;
-    @ManyToOne(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH,CascadeType.REFRESH}
-    )
-    @ToString.Exclude
-    @JoinColumn(name = "promotion_id")
-    private Promotion promotion;
+
 }

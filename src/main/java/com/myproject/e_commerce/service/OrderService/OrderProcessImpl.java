@@ -15,15 +15,11 @@ public class OrderProcessImpl implements OrderProcess {
     @Override
     public List<OrderProcessDTO> findOrderForEmployee(List<Orders> orders) {
         return orders.stream().map(order -> {
-            BigDecimal totalAmount = order.getOrderDetails().stream()
-                    .map(detail -> detail.getOriginalPrice()
-                            .multiply(new BigDecimal(detail.getQuantity())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
             OrderProcessDTO dto = new OrderProcessDTO();
             dto.setOrderId(order.getId());
             dto.setFullname(order.getCustomerDetails().getFullName());
             dto.setOrderDate(order.getOrderDate());
-            dto.setTotalPrice(totalAmount);
+            dto.setTotalPrice(order.getDiscountPrice());
             dto.setStatus(order.getStatus().getStatus());
             return dto;
         }).collect(Collectors.toList());
@@ -46,19 +42,18 @@ public class OrderProcessImpl implements OrderProcess {
                         .originalPrice(orderDetails.getOriginalPrice())
                         .imageUrl(orderDetails.getProduct().getImageUrl())
                         .note(orderDetails.getOrders().getNote())
-                        .totalPrice(orderDetails.getOriginalPrice().multiply(BigDecimal.valueOf(orderDetails.getQuantity())))
-                        .discountPromotion(orderDetails.getOriginalPrice())
+                        .totalPrice(orderDetails.getOriginalPrice())
+                        .discountPromotion(orderDetails.getDiscountPrice())
                         .build())
                 .toList();
-        BigDecimal totalPrice = orderDetailsDTOList.stream()
-                .map(OrderDetailsDTO::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
         return OrderDetailsWrapperDTO.builder()
                 .orderDetailsHistoryListDTO(orderDetailsDTOList)
                 .customerDetailDTO(customerDetailDTO)
                 .orderDate(orders.getOrderDate())
                 .orderId(orderId)
-                .grandTotalPrice(totalPrice)
+                .discountName(orders.getPromotion() != null ? orders.getPromotion().getName() : "Không có")
+                .discountType(orders.getPromotion() != null ? orders.getPromotion().getDiscountType() : null)
+                .grandTotalPrice(orders.getDiscountPrice())
                 .status(orders.getStatus().getStatus())
                 .build();
     }

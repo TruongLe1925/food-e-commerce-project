@@ -104,7 +104,7 @@
                               th:text="${#numbers.formatDecimal(pro.discountValue, 0, 'COMMA', 0, 'POINT')}">20</span>
                             <span class="ms-1 fw-bold text-danger"
                                   th:text="${pro.discountType.name() == 'PERCENTAGE' ? '%' : 'đ'}">%</span>
-                            <span class="ms-2 badge bg-soft-success text-success small">Đang áp dụng</span>
+                            <span class="ms-2 badge bg-soft-success text-success small" th:text="${pro.status}">Đang áp dụng</span>
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,27 @@
     </div>
     </div>
 </main>
+<div class="card border-0 shadow-sm p-4 mb-4 bg-white">
+    <h5 class="fw-bold mb-3 text-dark">
+        <i class="fas fa-image me-2 text-primary"></i> Thêm Banner Mới
+    </h5>
 
+    <form th:action="@{/admin/changeBanner}" method="POST" enctype="multipart/form-data" class="row g-3">
+        <div class="col-md-10">
+            <label class="form-label small fw-bold">Chọn hình ảnh Banner</label>
+            <input type="file" name="imageFile" class="form-control form-control-sm" accept="image/*" required>
+            <div class="form-text mt-1" style="font-size: 0.75rem;">
+                Gợi ý: Chọn ảnh tỉ lệ rộng (ví dụ 1920x600) để hiển thị đẹp nhất trên trang chủ.
+            </div>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary btn-sm w-100">
+                <i class="fas fa-upload me-1"></i> Tải lên
+            </button>
+        </div>
+    </form>
+</div>
 <div class="mt-auto" th:insert="~{layout :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

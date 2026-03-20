@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.generator.EventType;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,10 @@ public class Orders {
     @Column(name = "note")
     @Lob
     private String note;
+    @Column(name = "original_price",precision = 15,scale = 2)
+    private BigDecimal originalPrice;
+    @Column(name = "discount_price",precision = 15,scale = 2)
+    private BigDecimal discountPrice;
     @ManyToOne(fetch = FetchType.LAZY
                 ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                             CascadeType.REFRESH, CascadeType.DETACH})
@@ -49,4 +54,12 @@ public class Orders {
             this.orderDetails.add(orderDetails);
         orderDetails.setOrders(this);
     }
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH,CascadeType.REFRESH}
+    )
+    @ToString.Exclude
+    @JoinColumn(name = "promotion_id")
+    private Promotion promotion;
 }

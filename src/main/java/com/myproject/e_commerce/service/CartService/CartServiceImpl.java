@@ -1,20 +1,17 @@
 package com.myproject.e_commerce.service.CartService;
+import com.myproject.e_commerce.constants.DiscountType;
 import com.myproject.e_commerce.dao.InCartDAO.InCartDAO;
 import com.myproject.e_commerce.dto.CartDTO;
 import com.myproject.e_commerce.dto.CartResponseDTO;
 import com.myproject.e_commerce.dto.InCartDTO;
-import com.myproject.e_commerce.entity.Cart;
-import com.myproject.e_commerce.entity.CartItems;
-import com.myproject.e_commerce.entity.Product;
-import com.myproject.e_commerce.entity.User;
-import com.myproject.e_commerce.repository.CartItemsRepository;
-import com.myproject.e_commerce.repository.CartRepository;
-import com.myproject.e_commerce.repository.ProductRepository;
-import com.myproject.e_commerce.repository.UserRepository;
+import com.myproject.e_commerce.entity.*;
+import com.myproject.e_commerce.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +24,9 @@ public class CartServiceImpl implements CartService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final InCartDAO inCartDAO;
-    public CartServiceImpl(CartRepository cartRepository, CartItemsRepository cartItemsRepository, UserRepository userRepository , ProductRepository productRepository,InCartDAO inCartDAO) {
+    private final PromotionRepository promotionRepository;
+    public CartServiceImpl(PromotionRepository promotionRepository,CartRepository cartRepository, CartItemsRepository cartItemsRepository, UserRepository userRepository , ProductRepository productRepository,InCartDAO inCartDAO) {
+        this.promotionRepository = promotionRepository;
         this.inCartDAO = inCartDAO;
         this.cartRepository = cartRepository;
         this.cartItemsRepository = cartItemsRepository;
@@ -60,8 +59,9 @@ public class CartServiceImpl implements CartService {
         }
     }
     @Override
-    public CartResponseDTO getCart(String username) {
+    public CartResponseDTO getCart(String username,String code) {
         Cart cart = inCartDAO.getCart(username);
+
         if (cart == null || cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
             return CartResponseDTO.builder()
                     .items(Collections.emptyList())
@@ -83,9 +83,32 @@ public class CartServiceImpl implements CartService {
         BigDecimal cartTotalPrice = inCartDTOList.stream()
                 .map(InCartDTO::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal discountTotalPrice = BigDecimal.ZERO;
+        Promotion promotion;
+        if (code != null &&!code.trim().isEmpty()) {
+            promotion = promotionRepository.findByName(code);
+            if (promotion == null) {
+                throw new RuntimeException("Mã không tồn tại");
+            }
+            LocalDate now = LocalDate.now();
+            LocalDate expiredDate = promotion.getEndDate();
+            if(expiredDate.isAfter(now)) {
+                if (promotion != null && promotion.getDiscountType() == DiscountType.FIXED_AMOUNT) {
+                    discountTotalPrice = promotion.getDiscountValue();
+                } else {
+                    BigDecimal tempNumber = cartTotalPrice.multiply(promotion.getDiscountValue());
+                    discountTotalPrice = tempNumber.divide(new BigDecimal("100"), 2);
+                }
+                BigDecimal finalTotalPrice = cartTotalPrice.subtract(discountTotalPrice).max(BigDecimal.ZERO);
+            }else {
+                throw new RuntimeException("the promotion had expired");
+            }
+        }
+        BigDecimal finalTotalPrice = cartTotalPrice.subtract(discountTotalPrice).max(BigDecimal.ZERO);
         return CartResponseDTO.builder()
                 .items(inCartDTOList)
                 .cartTotalPrice(cartTotalPrice)
+                .discountTotalPrice(finalTotalPrice)
                 .build();
     }
     @Transactional

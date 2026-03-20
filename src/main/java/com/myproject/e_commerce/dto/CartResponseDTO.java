@@ -15,4 +15,5 @@ import java.util.List;
 public class CartResponseDTO {
     List<InCartDTO> items;
     BigDecimal cartTotalPrice;
+    BigDecimal discountTotalPrice;
 }

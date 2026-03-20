@@ -19,4 +19,5 @@ public class InCartDTO {
     private String description;
     private String imageUrl;
     private BigDecimal totalPrice;
+    private BigDecimal discountTotalPrice;
 }

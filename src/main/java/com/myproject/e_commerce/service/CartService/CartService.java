@@ -5,7 +5,7 @@ import com.myproject.e_commerce.dto.CartResponseDTO;
 
 public interface CartService {
     void addCart(CartDTO cartDTO);
-    CartResponseDTO getCart(String username);
+    CartResponseDTO getCart(String username,String code);
     void deleteCartItem(Integer cartItemsId);
 
 }
