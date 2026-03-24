@@ -1,9 +1,6 @@
 package com.myproject.e_commerce.exception.exceptionHandler;
 
-import com.myproject.e_commerce.exception.exception.AccessDeniedException;
-import com.myproject.e_commerce.exception.exception.InsufficientStockException;
-import com.myproject.e_commerce.exception.exception.OrderNotFoundException;
-import com.myproject.e_commerce.exception.exception.ProductNotFoundException;
+import com.myproject.e_commerce.exception.exception.*;
 import org.springframework.expression.AccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,5 +23,35 @@ public class MVCExceptionHandler {
     public String handleOrderNotFoundException(OrderNotFoundException e, RedirectAttributes  attributes) {
         attributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/cus/orders";
+    }
+    @ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(RuntimeException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/error/customError";
+    }
+    @ExceptionHandler(PromotionNotFoundException.class)
+    public String handlePromotionNotFoundException(PromotionNotFoundException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/cart/showCart";
+    }
+    @ExceptionHandler(PromotionExpiredException.class)
+    public String handlePromotionExpiredException(PromotionExpiredException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/cart/showCart";
+    }
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public String handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessageUsername", e.getMessage());
+        return "/login/register-form";
+    }
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public String handleEmailAlreadyExistsException(EmailAlreadyExistsException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessageEmail", e.getMessage());
+        return "/login/register-form";
+    }
+    @ExceptionHandler(PasswordMismatchException.class)
+    public String handlePasswordMismatchException(PasswordMismatchException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessagePasswordMismatch", e.getMessage());
+        return "/login/register-form";
     }
 }

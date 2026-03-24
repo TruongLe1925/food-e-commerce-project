@@ -3,7 +3,6 @@ package com.myproject.e_commerce.controller.home;
 import com.myproject.e_commerce.dto.BannerDTO;
 import com.myproject.e_commerce.dto.CartDTO;
 import com.myproject.e_commerce.dto.ProductHomePageDTO;
-import com.myproject.e_commerce.repository.BannerRepository;
 import com.myproject.e_commerce.service.AdminService.AdminService;
 import com.myproject.e_commerce.service.CartService.CartService;
 import com.myproject.e_commerce.service.ProductService.ProductService;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.security.Principal;
 import java.util.List;
 

@@ -5,10 +5,10 @@ import com.myproject.e_commerce.dto.CartDTO;
 import com.myproject.e_commerce.dto.CartResponseDTO;
 import com.myproject.e_commerce.dto.InCartDTO;
 import com.myproject.e_commerce.entity.*;
+import com.myproject.e_commerce.exception.exception.PromotionNotFoundException;
 import com.myproject.e_commerce.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -88,7 +88,7 @@ public class CartServiceImpl implements CartService {
         if (code != null &&!code.trim().isEmpty()) {
             promotion = promotionRepository.findByName(code);
             if (promotion == null) {
-                throw new RuntimeException("Mã không tồn tại");
+                throw new PromotionNotFoundException("Mã không tồn tại");
             }
             LocalDate now = LocalDate.now();
             LocalDate expiredDate = promotion.getEndDate();
@@ -101,7 +101,7 @@ public class CartServiceImpl implements CartService {
                 }
                 BigDecimal finalTotalPrice = cartTotalPrice.subtract(discountTotalPrice).max(BigDecimal.ZERO);
             }else {
-                throw new RuntimeException("the promotion had expired");
+                throw new PromotionNotFoundException("Mã đã hết hạn");
             }
         }
         BigDecimal finalTotalPrice = cartTotalPrice.subtract(discountTotalPrice).max(BigDecimal.ZERO);
