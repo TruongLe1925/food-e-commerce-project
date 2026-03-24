@@ -179,6 +179,8 @@ public class AdminController {
 
         return "admin/customerdashboard/customer";
     }
+
+
     @PostMapping("/toggle-status")
     public String toggleStatus(@RequestParam("username") String username) {
         customerService.updateCustomerStatus(username);
