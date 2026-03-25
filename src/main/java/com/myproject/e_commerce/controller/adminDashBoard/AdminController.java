@@ -1,5 +1,6 @@
 package com.myproject.e_commerce.controller.adminDashBoard;
 
+import com.myproject.e_commerce.constants.DiscountType;
 import com.myproject.e_commerce.constants.ProductStock;
 import com.myproject.e_commerce.constants.Role;
 import com.myproject.e_commerce.constants.StatusOrder;
@@ -241,6 +242,12 @@ public class AdminController {
     public String promotion(Model model) {
         List<PromotionDTO> promotionDTOS = promotionService.findAllPromotion();
         model.addAttribute("promotion",promotionDTOS);
+        model.addAttribute("createPromotion",new PromotionDTO());
         return  "admin/promotion";
+    }
+    @PostMapping("/savePromotion")
+    public String savePromotion(@ModelAttribute("createPromotion") PromotionDTO promotionDTO) {
+        promotionService.addPromotion(promotionDTO);
+        return "redirect:/admin/promotion";
     }
 }

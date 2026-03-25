@@ -90,43 +90,38 @@
         <h5 class="modal-title fw-bold" id="createVoucherModalLabel"><i class="fas fa-ticket-alt me-2"></i>Thêm Khuyến Mãi Mới</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form>
+      <form th:action="@{/admin/savePromotion}" th:object="${createPromotion}" method="POST">
         <div class="modal-body p-4">
           <div class="row g-3">
             <div class="col-12">
               <label class="form-label fw-bold small text-uppercase">Tên chương trình</label>
-              <input type="text" class="form-control" placeholder="Ví dụ: Giảm giá mùa Hè" required>
+              <input type="text" th:field="*{promotionName}" class="form-control" placeholder="Ví dụ: Giảm giá mùa Hè" required>
             </div>
 
             <div class="col-md-6">
               <label class="form-label fw-bold small text-uppercase">Loại giảm giá</label>
-              <select class="form-select">
-                <option value="Percentage">Phần trăm (%)</option>
-                <option value="Fixed">Số tiền cố định (VNĐ)</option>
+              <select th:field="*{discountType}" class="form-select">
+                <option value="PERCENTAGE">Phần trăm (%)</option>
+                <option value="FIXED_AMOUNT">Số tiền cố định (VNĐ)</option>
               </select>
             </div>
 
             <div class="col-md-6">
               <label class="form-label fw-bold small text-uppercase">Giá trị giảm</label>
               <div class="input-group">
-                <input type="number" class="form-control" placeholder="0.00" step="0.01" required>
+                <input type="number" th:field="*{discountValue}" class="form-control" placeholder="0.00" step="0.01" required>
                 <span class="input-group-text"><i class="fas fa-coins"></i></span>
               </div>
             </div>
 
             <div class="col-md-6">
               <label class="form-label fw-bold small text-uppercase">Ngày bắt đầu</label>
-              <input type="datetime-local" class="form-control" required>
+              <input type="date" th:field="*{startDate}" class="form-control" required>
             </div>
 
             <div class="col-md-6">
               <label class="form-label fw-bold small text-uppercase">Ngày kết thúc</label>
-              <input type="datetime-local" class="form-control" required>
-            </div>
-
-            <div class="col-12">
-              <label class="form-label fw-bold small text-uppercase">Mô tả ngắn</label>
-              <textarea class="form-control" rows="2" placeholder="Điều kiện áp dụng..."></textarea>
+              <input type="date" th:field="*{endDate}" class="form-control" required>
             </div>
           </div>
         </div>
