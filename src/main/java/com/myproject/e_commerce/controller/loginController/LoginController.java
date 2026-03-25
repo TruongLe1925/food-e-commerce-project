@@ -2,12 +2,13 @@ package com.myproject.e_commerce.controller.loginController;
 
 import com.myproject.e_commerce.dto.CustomerRegistrationDTO;
 import com.myproject.e_commerce.service.CustomerService.CustomerService;
+import jakarta.validation.Valid;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/account")
@@ -26,8 +27,12 @@ public class LoginController {
         return "login/register-form";
     }
     @PostMapping("/save")
-    public String save(@ModelAttribute("CustomerRegistrationDTO") CustomerRegistrationDTO customerRegistrationDTO){
-        customerService.save(customerRegistrationDTO);
-        return "redirect:/account/login";
+    public String save(@Valid @ModelAttribute("CustomerRegistrationDTO") CustomerRegistrationDTO customerRegistrationDTO, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "login/register-form";
+        }else {
+            customerService.save(customerRegistrationDTO);
+            return "redirect:/account/login";
+        }
     }
 }

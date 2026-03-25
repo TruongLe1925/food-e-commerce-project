@@ -7,6 +7,9 @@ import com.myproject.e_commerce.entity.Authority;
 import com.myproject.e_commerce.entity.CustomerDetails;
 import com.myproject.e_commerce.entity.Orders;
 import com.myproject.e_commerce.entity.User;
+import com.myproject.e_commerce.exception.exception.EmailAlreadyExistsException;
+import com.myproject.e_commerce.exception.exception.PasswordMismatchException;
+import com.myproject.e_commerce.exception.exception.UsernameAlreadyExistsException;
 import com.myproject.e_commerce.repository.AuthorityRepository;
 import com.myproject.e_commerce.repository.CustomerDetailsRepository;
 import com.myproject.e_commerce.repository.UserRepository;
@@ -37,13 +40,13 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public void save(CustomerRegistrationDTO dto) {
         if (customerDAO.existsByUsername(dto.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new UsernameAlreadyExistsException("Username already exists");
         }
         if (customerDAO.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new RuntimeException("Passwords do not match");
+            throw new PasswordMismatchException("Passwords do not match");
         }
         User user = User.builder()
                 .username(dto.getUsername())
@@ -56,6 +59,7 @@ public class CustomerServiceImpl implements CustomerService{
         CustomerDetails customerDetails = CustomerDetails.builder()
                 .fullName(dto.getFullName())
                 .email(dto.getEmail())
+                .address(dto.getAddress())
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
         authority.setUser(user);

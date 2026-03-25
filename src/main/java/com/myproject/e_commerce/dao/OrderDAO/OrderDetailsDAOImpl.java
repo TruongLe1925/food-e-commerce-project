@@ -3,10 +3,12 @@ package com.myproject.e_commerce.dao.OrderDAO;
 import com.myproject.e_commerce.constants.StatusOrder;
 import com.myproject.e_commerce.entity.Orders;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OrderDetailsDAOImpl implements OrderDetailsDAO {
@@ -15,10 +17,14 @@ public class OrderDetailsDAOImpl implements OrderDetailsDAO {
         this.entityManager = entityManager;
     }
     @Override
-    public Orders findOrderById(Integer orderId) {
-        TypedQuery<Orders> query = entityManager.createQuery("SELECT o FROM Orders o LEFT JOIN FETCH o.orderDetails LEFT JOIN FETCH o.customerDetails LEFT JOIN FETCH o.status LEFT JOIN FETCH o.orderDetails.product  LEFT JOIN FETCH o.customerDetails.user WHERE o.id = :orderId", Orders.class);
-        query.setParameter("orderId", orderId);
-        return query.getSingleResult();
+    public Optional<Orders> findOrderById(Integer orderId) {
+        try {
+            TypedQuery<Orders> query = entityManager.createQuery("SELECT o FROM Orders o LEFT JOIN FETCH o.orderDetails LEFT JOIN FETCH o.customerDetails LEFT JOIN FETCH o.status LEFT JOIN FETCH o.orderDetails.product  LEFT JOIN FETCH o.customerDetails.user WHERE o.id = :orderId", Orders.class);
+            query.setParameter("orderId", orderId);
+            return Optional.ofNullable(query.getSingleResult());
+        }catch(NoResultException e){
+            return Optional.empty();
+        }
     }
 
     @Override

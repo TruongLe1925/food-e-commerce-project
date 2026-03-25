@@ -22,7 +22,11 @@
 <div th:insert="~{layout :: header}"></div>
 <div class="container py-5">
     <h2 class="fw-bold mb-4">Giỏ hàng của bạn</h2>
-
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert"
+         style="color: red; margin-bottom: 20px; font-size: 0.9rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 p-3">
@@ -52,7 +56,12 @@
                                     <input th:value="${item.quantity}" class="qty-input" readonly>
                                 </div>
                             </td>
-                            <td><span class="fw-bold" th:text="${item.totalPrice}">45.000đ</span></td>
+                            <td>
+                                <span class="fw-bold"
+                                      th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'POINT', 0, 'COMMA') + 'đ'}">
+                                      45.000đ
+                                </span>
+                            </td>
                             <form method="POST" th:action="@{/cart/delete}">
                                 <td>
                                     <button type="button" class="btn btn-light btn-sm rounded-circle text-danger"
@@ -100,7 +109,9 @@
                 <h5 class="fw-bold mb-4">Chi tiết thanh toán</h5>
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Tạm tính</span>
-                    <span th:text="${itemCarts.cartTotalPrice}">165.000đ</span>
+                    <span th:text="${#numbers.formatDecimal(itemCarts.cartTotalPrice, 0, 'POINT', 0, 'COMMA') + 'đ'}">
+                        165.000đ
+                    </span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Vận chuyển</span>
@@ -109,7 +120,10 @@
                 <hr>
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Giảm giá</span>
-                    <span class="text-danger" th:text="${'-' + itemCarts.discountTotalPrice}">-0đ</span>
+                    <span class="text-danger"
+                          th:text="${'-' + #numbers.formatDecimal(itemCarts.discountTotalPrice, 0, 'POINT', 0, 'COMMA') + 'đ'}">
+                             -0đ
+                    </span>
                 </div>
 
                 <hr>
@@ -117,8 +131,9 @@
                 <div class="d-flex justify-content-between mb-4">
                     <span class="fw-bold fs-5">Tổng cộng</span>
                     <span class="fw-bold fs-5 text-primary"
-                          th:text="${itemCarts.cartTotalPrice > itemCarts.discountTotalPrice ? itemCarts.discountTotalPrice : itemCarts.cartTotalPrice}">
-                         165.000đ
+                          th:with="finalPrice=${itemCarts.cartTotalPrice > itemCarts.discountTotalPrice ? itemCarts.discountTotalPrice : itemCarts.cartTotalPrice}"
+                          th:text="${#numbers.formatDecimal(finalPrice, 0, 'POINT', 0, 'COMMA') + 'đ'}">
+                            165.000đ
                     </span>
                 </div>
 

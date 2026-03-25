@@ -4,15 +4,18 @@ import com.myproject.e_commerce.constants.StatusOrder;
 import com.myproject.e_commerce.dao.OrderDAO.OrderDetailsDAO;
 import com.myproject.e_commerce.dto.*;
 import com.myproject.e_commerce.entity.*;
+import com.myproject.e_commerce.exception.exception.AccessDeniedException;
+import com.myproject.e_commerce.exception.exception.InsufficientStockException;
+import com.myproject.e_commerce.exception.exception.OrderNotFoundException;
+import com.myproject.e_commerce.exception.exception.ProductNotFoundException;
 import com.myproject.e_commerce.repository.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -25,7 +28,11 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDetailsDAO orderDetailsDAO;
     private final OrderProcess orderProcess;
     private final PromotionRepository promotionRepository;
-    public OrderServiceImpl(PromotionRepository promotionRepository,OrderProcess orderProcess,OrderDetailsDAO orderDetailsDAO,OrdersRepository ordersRepository,CustomerDetailsRepository customerDetailsRepository, StatusRepository statusRepository,CartItemsRepository cartItemsRepository, OrderDetailsRepository orderDetailsRepository,CartRepository cartRepository) {
+    private final ProductRepository productRepository;
+    @Value("${orderAddress}")
+    private String orderAddress;
+    public OrderServiceImpl(ProductRepository productRepository,PromotionRepository promotionRepository,OrderProcess orderProcess,OrderDetailsDAO orderDetailsDAO,OrdersRepository ordersRepository,CustomerDetailsRepository customerDetailsRepository, StatusRepository statusRepository,CartItemsRepository cartItemsRepository, OrderDetailsRepository orderDetailsRepository,CartRepository cartRepository) {
+        this.productRepository = productRepository;
         this.promotionRepository = promotionRepository;
         this.orderProcess = orderProcess;
         this.orderDetailsDAO = orderDetailsDAO;
@@ -47,15 +54,16 @@ public class OrderServiceImpl implements OrderService {
                 .customerDetails(customerDetails)
                 .status(status)
                 .promotion(promotion)
-                .orderAddress("BlaBlaBla")
+                .orderAddress(orderAddress)
                 .originalPrice(cartTotalPrice)
                 .discountPrice(discountTotalPrice)
                 .note(note)
                 .build();
         for (CartItems item : cart.getCartItems()) {
-            Product product = item.getProduct();
+            Product product = productRepository.findByIdForUpdate(item.getProduct().getId())
+                    .orElseThrow(() -> new ProductNotFoundException("Sản phẩm không tồn tại!"));
             if (product.getStock() < item.getQuantity()) {
-                throw new RuntimeException("Sản phẩm " + product.getName() + " không đủ hàng!");
+                throw new InsufficientStockException("Sản phẩm " + product.getName() + " không đủ hàng!");
             }
             int stock = product.getStock() - item.getQuantity();
             product.setStock(stock);
@@ -88,24 +96,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDetailsWrapperDTO getOrderDetails(Integer orderId,String username) {
-        Orders orders = orderDetailsDAO.findOrderById(orderId);
+        Orders orders = orderDetailsDAO.findOrderById(orderId).orElseThrow(() -> new OrderNotFoundException("Không tồn tại đơn hàng này") );
         Promotion promotion = orders.getPromotion();
         if (!orders.getCustomerDetails().getUser().getUsername().equals(username)) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                    org.springframework.http.HttpStatus.FORBIDDEN, "Bạn không có quyền xem đơn hàng này!");
+            throw new AccessDeniedException("Bạn không có quyền xem đơn hàng này!");
         }
         return orderProcess.getOrderDetails(orders,orderId);
     }
+
     @Override
     public OrderDetailsWrapperDTO getOrderDetailsForEmployee(Integer orderId) {
-        Orders orders= orderDetailsDAO.findOrderById(orderId);
+        Orders orders= orderDetailsDAO.findOrderById(orderId).orElse(null);
         return orderProcess.getOrderDetails(orders,orderId);
     }
 
     @Transactional
     @Override
     public void cancelOrder(Integer orderId) {
-        Orders orders = orderDetailsDAO.findOrderById(orderId);
+        Orders orders = orderDetailsDAO.findOrderById(orderId).orElse(null);
         StatusOrder statusOrder = StatusOrder.CANCELLED;
         Status status = statusRepository.findByStatus(statusOrder);
         if (orders.getStatus().getStatus() != StatusOrder.PENDING) {
@@ -133,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void updateToNextStatus(Integer orderId) {
-        Orders orders = orderDetailsDAO.findOrderById(orderId);
+        Orders orders = orderDetailsDAO.findOrderById(orderId).orElse(null);
         StatusOrder nextEnum = orders.getStatus().getStatus().next();
         Status nextStatusEntity = statusRepository.findByStatus(nextEnum);
         orders.setStatus(nextStatusEntity);
