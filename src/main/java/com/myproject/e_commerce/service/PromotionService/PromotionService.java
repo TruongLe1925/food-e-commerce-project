@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PromotionService {
     List<PromotionDTO> findAllPromotion();
+    void addPromotion(PromotionDTO promotionDTO);
 }

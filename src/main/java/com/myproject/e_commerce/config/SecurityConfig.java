@@ -28,9 +28,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/my-ui.html", "/my-api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/account/**","/").permitAll()
-                        .requestMatchers("/leaders/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/manager/**").hasAnyRole("MANAGER","ADMIN")
                         .requestMatchers("/cus/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated())
@@ -41,7 +43,7 @@ public class SecurityConfig {
                                 .permitAll())
                 .logout(logout ->logout.logoutUrl("/logout").permitAll())
                 .exceptionHandling(configurer->
-                        configurer.accessDeniedPage("/accessDenied"));;
+                        configurer.accessDeniedPage("/error/customError"));;
         http.csrf(csrf -> csrf.disable());
         return http.build();
     }
