@@ -1,16 +1,26 @@
 package com.myproject.e_commerce.exception.exceptionHandler;
 
-import com.myproject.e_commerce.exception.errorReponse.EntityErrorResponse;
+import com.myproject.e_commerce.response.EntityErrorResponse;
 import com.myproject.e_commerce.exception.exception.*;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice(annotations = RestController.class)
+@RestControllerAdvice(annotations = RestController.class)
+@Order(1)
 public class RestExceptionHandler {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<EntityErrorResponse> userNotFoundExeption(UserNotFoundException exeption) {
+        EntityErrorResponse response = new EntityErrorResponse();
+        response.setMessage(exeption.getMessage());
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setTimestamp(System.currentTimeMillis());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<EntityErrorResponse> handleException(ProductNotFoundException e) {
         EntityErrorResponse response = new EntityErrorResponse();
@@ -93,6 +103,14 @@ public class RestExceptionHandler {
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<EntityErrorResponse> handleException(MethodArgumentNotValidException e) {
+        EntityErrorResponse response = new EntityErrorResponse();
+        response.setMessage(e.getMessage());
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setTimestamp(System.currentTimeMillis());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<EntityErrorResponse> handleException(NullPointerException e) {
         EntityErrorResponse response = new EntityErrorResponse();
         response.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());

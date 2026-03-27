@@ -5,13 +5,14 @@ import com.myproject.e_commerce.dto.CartDTO;
 import com.myproject.e_commerce.dto.CartResponseDTO;
 import com.myproject.e_commerce.dto.InCartDTO;
 import com.myproject.e_commerce.entity.*;
+import com.myproject.e_commerce.exception.exception.ProductNotFoundException;
 import com.myproject.e_commerce.exception.exception.PromotionNotFoundException;
+import com.myproject.e_commerce.exception.exception.UserNotFoundException;
 import com.myproject.e_commerce.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -36,9 +37,12 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public void addCart(CartDTO cartDTO) {
-        User user = userRepository.findByUsername(cartDTO.getUsername()).orElse(null);
+        User user = userRepository.findByUsername(cartDTO.getUsername()).orElseThrow(() -> new UserNotFoundException("Khong ton tai User nay"));
         Cart cart = cartRepository.findByUser(user).orElse(null);
         Product product = productRepository.findByName(cartDTO.getProductName());
+        if(product == null){
+            throw new ProductNotFoundException("Sản phẩm không tồn tại!");
+        }
         if (cart == null) {
             cart = new Cart();
             cart.setUser(user);

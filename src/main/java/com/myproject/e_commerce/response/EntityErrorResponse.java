@@ -1,4 +1,4 @@
-package com.myproject.e_commerce.exception.errorReponse;
+package com.myproject.e_commerce.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
