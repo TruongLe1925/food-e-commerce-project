@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.thymeleaf.exceptions.TemplateInputException;
 
-@ControllerAdvice(annotations = Controller.class)
+@ControllerAdvice()
 @Order(2)
 public class MVCExceptionHandler {
     @ExceptionHandler(InsufficientStockException.class)
@@ -70,6 +71,11 @@ public class MVCExceptionHandler {
     }
     @ExceptionHandler(NullPointerException.class)
     public String handleNullPointerException(NullPointerException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/error/customError";
+    }
+    @ExceptionHandler(TemplateInputException.class)
+    public String handleTemplateInputException(TemplateInputException e, RedirectAttributes  attributes) {
         attributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/error/customError";
     }

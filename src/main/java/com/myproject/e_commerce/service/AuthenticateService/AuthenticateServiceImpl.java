@@ -1,5 +1,6 @@
 package com.myproject.e_commerce.service.AuthenticateService;
 
+import com.myproject.e_commerce.constants.Role;
 import com.myproject.e_commerce.dto.InstrospectRequestDTO;
 import com.myproject.e_commerce.dto.RequestDTO;
 import com.myproject.e_commerce.entity.User;
@@ -16,6 +17,7 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,9 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 public class AuthenticateServiceImpl implements AuthenticateService{
@@ -67,6 +72,11 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 
     //GenerateTokenForJWT
     private String generateToken(String username) throws KeyLengthException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        List<String> authorities = user.getAuthorities().stream()
+                .map(authority -> authority.getAuthority().name())
+                .collect(Collectors.toList());
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(username)
@@ -74,6 +84,7 @@ public class AuthenticateServiceImpl implements AuthenticateService{
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
                 .claim("username",username)
+                .claim("roles",authorities)
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 

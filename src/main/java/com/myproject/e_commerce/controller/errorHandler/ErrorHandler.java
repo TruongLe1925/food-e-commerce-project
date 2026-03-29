@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ErrorHandler {
     @GetMapping("/customError")
     public String handleError() {
-        return "custom-error";
+        return "/custom-error";
     }
 }
