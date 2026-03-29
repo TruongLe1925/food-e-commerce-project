@@ -1,6 +1,7 @@
 package com.myproject.e_commerce.exception.exceptionHandler;
 
 import com.myproject.e_commerce.exception.exception.*;
+import org.springframework.core.annotation.Order;
 import org.springframework.expression.AccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,8 +9,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.thymeleaf.exceptions.TemplateInputException;
 
-@ControllerAdvice(annotations = Controller.class)
+@ControllerAdvice()
+@Order(2)
 public class MVCExceptionHandler {
     @ExceptionHandler(InsufficientStockException.class)
     public String handleProductNotFoundException(InsufficientStockException e, RedirectAttributes  attributes) {
@@ -63,6 +66,16 @@ public class MVCExceptionHandler {
     }
     @ExceptionHandler(NoResourceFoundException.class)
     public String handleNoResourceFoundException(NoResourceFoundException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/error/customError";
+    }
+    @ExceptionHandler(NullPointerException.class)
+    public String handleNullPointerException(NullPointerException e, RedirectAttributes  attributes) {
+        attributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/error/customError";
+    }
+    @ExceptionHandler(TemplateInputException.class)
+    public String handleTemplateInputException(TemplateInputException e, RedirectAttributes  attributes) {
         attributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/error/customError";
     }
