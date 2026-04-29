@@ -34,8 +34,8 @@ public class Orders {
     @Column(name = "discount_price",precision = 15,scale = 2)
     private BigDecimal discountPrice;
     @ManyToOne(fetch = FetchType.LAZY
-                ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                            CascadeType.REFRESH, CascadeType.DETACH})
+            ,cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name="customer_id")
     private CustomerDetails customerDetails;
     @ManyToOne(fetch = FetchType.LAZY

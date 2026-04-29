@@ -1,4 +1,4 @@
-package com.myproject.e_commerce.restController.AuthenticationRestController;
+package com.myproject.e_commerce.restController.authenticationRestController;
 
 import com.myproject.e_commerce.dto.CustomerRegistrationDTO;
 import com.myproject.e_commerce.dto.InstrospectRequestDTO;

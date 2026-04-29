@@ -1,4 +1,4 @@
-package com.myproject.e_commerce.restController.UserRestController;
+package com.myproject.e_commerce.restController.userRestController;
 
 import com.myproject.e_commerce.dto.CartDTO;
 import com.myproject.e_commerce.dto.ProductHomePageDTO;
@@ -22,9 +22,10 @@ public class HomeRestController {
     }
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'MANAGER')")
     @GetMapping("/product")
-    public List<ProductHomePageDTO> productList() {
-        return productService.findAllProducts();
+    public ResponseEntity<List<ProductHomePageDTO>> productList() {
+        return ResponseEntity.ok(productService.findAllProducts());
     }
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/addToCart")
     public ResponseEntity<Void> addtoCart(@RequestBody CartDTO cartdto, Principal principal){
         String username = principal.getName();
