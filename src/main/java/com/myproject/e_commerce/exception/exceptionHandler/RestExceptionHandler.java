@@ -115,7 +115,6 @@ public class RestExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-
         return ResponseEntity.badRequest().body(errors);
     }
     @ExceptionHandler(NullPointerException.class)
