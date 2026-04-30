@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,7 +16,7 @@ import java.util.Map;
 
 @RestControllerAdvice(annotations = RestController.class)
 @Order(1)
-public class RestExceptionHandler {
+public class RestMVCExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<EntityErrorResponse> userNotFoundExeption(UserNotFoundException exeption) {
         EntityErrorResponse response = new EntityErrorResponse();
