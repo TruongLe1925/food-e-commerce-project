@@ -1,11 +1,16 @@
 package com.myproject.e_commerce.intergationTest;
 
+import com.myproject.e_commerce.constants.DiscountType;
+import com.myproject.e_commerce.constants.StatusOrder;
 import com.myproject.e_commerce.dao.CustomerDAO.CustomerDAO;
 import com.myproject.e_commerce.dao.CustomerDAO.CustomerDAOImp;
-import com.myproject.e_commerce.dto.CustomerDetailDTO;
-import com.myproject.e_commerce.dto.CustomerRegistrationDTO;
+import com.myproject.e_commerce.dto.*;
+import com.myproject.e_commerce.entity.*;
+import com.myproject.e_commerce.repository.*;
+import com.myproject.e_commerce.service.CartService.CartService;
 import com.myproject.e_commerce.service.CustomerService.CustomerService;
 import com.myproject.e_commerce.service.OrderService.OrderService;
+import com.myproject.e_commerce.service.ProductService.ProductService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.aspectj.lang.annotation.After;
@@ -19,17 +24,21 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @TestPropertySource("/application_test.properties")
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,9 +53,13 @@ public class UserController {
     @Autowired
     private CustomerService customerService;
     @Autowired
+    private ProductService productService;
+    @Autowired
+    private CartService cartService;
+    @Autowired
     private OrderService orderService;
     @Autowired
-    CustomerDAOImp customerDAO;
+    private StatusRepository statusRepository;
     @BeforeEach
     public void setUp() {
         CustomerRegistrationDTO customerRegistrationDTO = CustomerRegistrationDTO.builder()
@@ -58,17 +71,41 @@ public class UserController {
                 .fullName("testuser")
                 .phoneNumber("099123123")
                 .build();
+        AddProductDTO addProductDTO = AddProductDTO.builder()
+                .productName("testproduct")
+                .description("testproduct")
+                .price(new BigDecimal(100))
+                .thumbnailUrl("testThumnailProduct")
+                .imageUrl("testImageProduct")
+                .quantity(100)
+                .build();
+        CartDTO cartDTO = CartDTO.builder()
+                .quantity(2)
+                .productName("testproduct")
+                .username("testuser")
+                .build();
+        Status status = Status.builder()
+                .status(StatusOrder.PENDING)
+                .build();
+        statusRepository.save(status);
         customerService.save(customerRegistrationDTO);
-//        jdbc.execute("INSERT INTO users (username, password, enabled) VALUES ('testuser', '123123', true)");
-//        jdbc.execute("INSERT INTO customer_details (users_id, email, full_name, phone_number, address) VALUES ('testuser', 'testuser@gmail.com', 'testuser', '099123123', '123123')");
+        productService.addProduct(addProductDTO);
+        cartService.addCart(cartDTO);
+        orderService.addToOrder("testuser",null,null,new BigDecimal(100),new BigDecimal(100));
     }
     @AfterEach
     public void tearDown() {
-        jdbc.execute("DELETE FROM authorities WHERE username = 'testuser'");
-        jdbc.execute("DELETE FROM customer_details WHERE users_id = 'testuser'");
-        jdbc.execute("DELETE FROM users WHERE username = 'testuser'");
-        jdbc.execute("ALTER TABLE customer_details ALTER COLUMN id RESTART WITH 1");
-        jdbc.execute("ALTER TABLE authorities ALTER COLUMN id RESTART WITH 1");
+        jdbc.execute("SET REFERENTIAL_INTEGRITY FALSE");
+        jdbc.execute("TRUNCATE TABLE order_details RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE orders RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE cart_items RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE cart RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE status RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE product RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE authorities RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE customer_details RESTART IDENTITY");
+        jdbc.execute("TRUNCATE TABLE users");
+        jdbc.execute("SET REFERENTIAL_INTEGRITY TRUE");
     }
     @Test
     @WithMockUser(username = "testuser",authorities = {"ROLE_CUSTOMER"})
@@ -105,5 +142,49 @@ public class UserController {
         ModelAndView mav = mvcResult.getModelAndView();
         ModelAndViewAssert.assertViewName(mav, "redirect:/");
     }
-
+    @Test
+    @WithMockUser(username = "testuser",authorities = {"ROLE_CUSTOMER"})
+    public void viewOrdersHttpRequest() throws Exception{
+        MvcResult mvcResult = this.mockMvc.perform(get("/cus/orders"))
+                .andExpect(status().isOk())
+                .andReturn();
+        ModelAndView mav = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mav, "/user-profile/order-history");
+    }
+    @Test
+    @WithMockUser(username = "testuser",authorities = {"ROLE_CUSTOMER"})
+    public void viewOrderDetailsHttpRequest() throws Exception{
+//        CustomerDetailDTO customerDetailDTO = CustomerDetailDTO.builder()
+//                .fullName("testuser")
+//                .email("testuser@gmail.com")
+//                .address("123123")
+//                .phoneNumber("099123123")
+//                .build();
+//        OrderDetailsWrapperDTO orderDetailsWrapperDTO = OrderDetailsWrapperDTO.builder()
+//                .orderId(1)
+//                .discountName("testdiscount")
+//                .discountType(DiscountType.PERCENTAGE)
+//                .grandTotalPrice(new BigDecimal(100))
+//                .status(StatusOrder.PENDING)
+//                .customerDetailDTO(customerDetailDTO)
+//                .build();
+//        when(orderService.getOrderDetails(1,"testuser")).thenReturn(orderDetailsWrapperDTO);
+        MvcResult mvcResult = this.mockMvc.perform(get("/cus/orderdetails/{id}",1))
+                .andExpect(status().isOk())
+                .andReturn();
+        ModelAndView mav = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mav, "/user-profile/order-history-details");
+        List<OrderDTO> orderDTOS = orderService.getOrder("testuser");
+        System.out.println(orderDTOS);
+    }
+    @Test
+    @WithMockUser(username = "testuser",authorities = {"ROLE_CUSTOMER"})
+    public void CancelOrderHttpRequest() throws Exception{
+        MvcResult mvcResult = this.mockMvc.perform(post("/cus/cancelOrder")
+                        .param("orderId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn();
+        ModelAndView mav = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mav, "redirect:/cus/orderdetails/{id}");
+    }
 }
