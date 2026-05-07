@@ -15,7 +15,8 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("cart")
-public class InCart {
+public class
+InCart {
     private final CartService cartService;
     private final OrderService orderService;
     public  InCart(CartService cartService,OrderService orderService) {
