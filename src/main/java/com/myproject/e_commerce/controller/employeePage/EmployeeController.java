@@ -30,7 +30,7 @@ public class EmployeeController {
         model.addAttribute("currentStatus", status);
         model.addAttribute("orderProcessDTOS", orderProcessDTOS);
         model.addAttribute("username", username);
-        return "/employee/employee";
+        return "employee/employee";
     }
     @PostMapping("/update-status")
     public String updateStatus(@RequestParam(name = "orderId") Integer orderId) {
@@ -42,6 +42,6 @@ public class EmployeeController {
         OrderDetailsWrapperDTO orderDetailsWrapperDTO = orderService.getOrderDetailsForEmployee(orderId);
 
         model.addAttribute("orderDetails",orderDetailsWrapperDTO);
-        return "/employee/orderDetails";
+        return "employee/orderDetails";
     }
 }
