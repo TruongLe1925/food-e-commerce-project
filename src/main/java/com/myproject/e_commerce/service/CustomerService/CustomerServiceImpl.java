@@ -144,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService{
                         .id(cus.getId())
                         .fullName(cus.getFullName())
                         .enabled(cus.getUser().isEnabled() == true?"active":"inactive")
-                        .phoneNumber(cus.getFullName())
+                        .phoneNumber(cus.getPhoneNumber())
                         .address(cus.getAddress())
                         .build())
                 .toList();

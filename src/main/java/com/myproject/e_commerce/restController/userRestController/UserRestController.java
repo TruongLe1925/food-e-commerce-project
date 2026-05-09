@@ -33,7 +33,7 @@ public class UserRestController {
         return ResponseEntity.ok(customerService.getCustomerDetailsByUsername(username));
     }
     @PatchMapping("/profile")
-    public CustomerDetailDTO updateProfile(@AuthenticationPrincipal Jwt jwt,
+    public ResponseEntity<CustomerDetailDTO> updateProfile(@AuthenticationPrincipal Jwt jwt,
                                            @RequestBody Map<String, Object> patchPayload) {
         String username = jwt.getSubject();
         CustomerDetailDTO customer = customerService.getCustomerDetailsByUsername(username);
@@ -42,7 +42,7 @@ public class UserRestController {
         }
         CustomerDetailDTO patchedCustomer = jsonMapper.updateValue(customer, patchPayload);
         customerService.updateCustomerDetails(username, patchedCustomer);
-        return patchedCustomer;
+        return ResponseEntity.ok(patchedCustomer);
     }
 
 }

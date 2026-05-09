@@ -22,7 +22,7 @@ public class OrderRestController {
         this.orderService = orderService;
     }
 
-    @GetMapping
+    @GetMapping("/allOrders")
     public ResponseEntity<List<OrderDTO>> getUserOrders(@AuthenticationPrincipal Jwt jwt) {
         String username = jwt.getSubject();
         return ResponseEntity.ok(orderService.getOrder(username));
