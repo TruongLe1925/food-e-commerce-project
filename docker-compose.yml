@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: e-commerce-mysql
+    restart: unless-stopped
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: e-commerce
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  app:
+    image: truongli/e-commerce:0.0.4
+    container_name: e-commerce
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/e-commerce
+      SPRING_DATASOURCE_USERNAME: springstudent
+      SPRING_DATASOURCE_PASSWORD: springstudent
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql-data:

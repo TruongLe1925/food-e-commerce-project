@@ -31,7 +31,7 @@ public class HomePage {
         BannerDTO bannerDTO = adminService.banner();
         model.addAttribute("bannerDTO",bannerDTO);
         model.addAttribute("product", productHomePageDTOS);
-        return "/shop-homepage/index";
+        return "shop-homepage/index";
     }
 
     @PostMapping("/addToCart")
