@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
-public class CustomerRestController {
+public class ManagerCustomerRestController {
     @Value("${page-size:10}")
     private int pageSize;
     private final CustomerService customerService;
 
-    public CustomerRestController (CustomerService customerService) {
+    public ManagerCustomerRestController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
