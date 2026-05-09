@@ -54,7 +54,37 @@ src/main/java/com/myproject/e_commerce/
 ├── restController/                    # REST API Controllers
 └── service/                           # Business Logic Layer
 ```
+### 🛒 Use Case Analysis
+The E-Commerce System consists of three primary actors: Customer, Manager, and Admin, each with specific responsibilities within the system boundary.
 
+1. Customer (End User)
+   Focuses on the shopping experience and personal account management:
+
+Authentication: Login/Logout and managing personal profile details.
+
+Shopping Flow: Browsing products/categories, managing the shopping cart, and placing orders (including applying promotions).
+
+Post-Purchase: Tracking real-time order status.
+
+2. Manager (Operational Staff)
+   Handles the day-to-day business operations:
+
+Order Fulfillment: Processing and updating customer orders.
+
+
+3. Admin (System Administrator)
+   Oversees the entire system and security:
+
+Inheritance: Can access to  Manager functionalities.
+
+User Management: Creating, updating, and managing user accounts.
+
+Access Control: Assigning specific roles and authorities (RBAC) to ensure system security.
+
+Inventory & Content: Managing product details, stock levels, categories, and marketing banners.
+
+Marketing: Setting up and managing promotional campaigns.
+![UseCaseDocs.drawio.png](src/main/resources/static/images/doc/UseCaseDocs.drawio.png)
 ## 📊 Database Schema
 ![ERD.jpg](src/main/resources/static/images/doc/ERD.jpg)
 ### Core Entities
