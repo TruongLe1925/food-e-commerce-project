@@ -5,7 +5,6 @@ import com.myproject.e_commerce.dto.AddProductDTO;
 import com.myproject.e_commerce.dto.CartDTO;
 import com.myproject.e_commerce.dto.CustomerDetailDTO;
 import com.myproject.e_commerce.dto.CustomerRegistrationDTO;
-import com.myproject.e_commerce.entity.CustomerDetails;
 import com.myproject.e_commerce.entity.Status;
 import com.myproject.e_commerce.repository.StatusRepository;
 import com.myproject.e_commerce.service.CartService.CartService;
@@ -23,13 +22,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource("/application_test.properties")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserRestController {
+public class UserRestControllerTest {
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired

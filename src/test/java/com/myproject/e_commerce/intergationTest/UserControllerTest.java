@@ -1,9 +1,6 @@
 package com.myproject.e_commerce.intergationTest;
 
-import com.myproject.e_commerce.constants.DiscountType;
 import com.myproject.e_commerce.constants.StatusOrder;
-import com.myproject.e_commerce.dao.CustomerDAO.CustomerDAO;
-import com.myproject.e_commerce.dao.CustomerDAO.CustomerDAOImp;
 import com.myproject.e_commerce.dto.*;
 import com.myproject.e_commerce.entity.*;
 import com.myproject.e_commerce.repository.*;
@@ -13,29 +10,24 @@ import com.myproject.e_commerce.service.OrderService.OrderService;
 import com.myproject.e_commerce.service.ProductService.ProductService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 //@Transactional
-public class UserController {
+public class UserControllerTest {
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
