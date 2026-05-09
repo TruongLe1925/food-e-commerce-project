@@ -295,7 +295,6 @@ springdoc.api-docs.path=/my-api-docs
 - Error tracking and alerting
 
 ### Health Checks
-- Spring Boot Actuator endpoints
 - Database connectivity monitoring
 - Application health metrics
 - Docker health checks
@@ -308,15 +307,11 @@ springdoc.api-docs.path=/my-api-docs
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## 📞 Support
 
 For support and questions:
 - Create an issue in the repository
-- Check the API documentation at `/my-ui.html`
+- Check the API documentation at `http://localhost:8080/swagger-ui/index.html`
 - Review the application logs for troubleshooting
 
 ## 🏆 Project Highlights
