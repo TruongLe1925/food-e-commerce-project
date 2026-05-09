@@ -177,7 +177,18 @@ target/site/jacoco/index.html
 - **Integration Tests**: Controller and database integration
 - **Security Tests**: Authentication and authorization
 - **API Tests**: REST endpoint functionality
+- 
+### 🧪 Testing & Quality Assurance
+- The project prioritizes the verification of core system components, specifically focusing on the order fulfillment and shopping cart workflows to ensure the reliability of critical business logic.
 
+### 📊 Coverage Overview
+- While the overall project coverage stands at 39%, the testing strategy intentionally targets the most complex modules, achieving high coverage (>80%) for essential services.
+![testCoverage.jpg](src/main/resources/static/images/doc/testCoverage.jpg)
+### 🎯 Key Testing Highlights
+- Business Logic Coverage: Achieved deep testing for CartService (100%) and OrderService (89%).
+- Integration Testing: Completed comprehensive integration tests for UserController and UserRestController to ensure API endpoint reliability.
+- Success Rate: All unit and integration tests currently pass with a 100% success rate.
+![rate.jpg](src/main/resources/static/images/doc/rate.jpg)
 ## 📦 Deployment
 
 ### Docker Deployment
@@ -224,11 +235,11 @@ springdoc.api-docs.path=/my-api-docs
 
 ### Admin Account
 - **Username**: admin
-- **Password**: password
+- **Password**: 123123
 
 ### Test Customer Accounts
-- **Username**: customer1 / **Password**: password
-- **Username**: customer2 / **Password**: password
+- **Username**: customer1 / **Password**: 123123
+- **Username**: customer2 / **Password**: 123123
 
 ## 📈 Performance & Scalability
 
